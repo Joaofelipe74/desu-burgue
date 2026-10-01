@@ -1,0 +1,24 @@
+{
+  "name": "desu-burguer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de pedidos da hamburgueria Desu Burguer: cardápio, carrinho, checkout, acompanhamento e painel administrativo.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch-path=server server/index.js",
+    "create-admin": "node --disable-warning=ExperimentalWarning scripts/create-admin.js",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.js",
+    "purge-personal-data": "node --disable-warning=ExperimentalWarning scripts/purge-personal-data.js",
+    "check": "node scripts/check-syntax.js && npm test",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"tests/*.test.js\"",
+    "test:e2e": "node --disable-warning=ExperimentalWarning tests/e2e/fluxo.e2e.js",
+    "import-image": "node --disable-warning=ExperimentalWarning scripts/import-image.js"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.35.4"
+  }
+}

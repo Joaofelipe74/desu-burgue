@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Desu Burguer — Cardápio</title>
+    <meta name="description" content="Hambúrguer feito na hora. Monte seu pedido pelo cardápio online da Desu Burguer." />
+    <meta name="theme-color" content="#161616" />
+    <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="module" src="/js/menu-page.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#cardapio">Pular para o cardápio</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span data-store-name>Desu Burguer</span>
+        </a>
+        <button class="btn btn-primary cart-button" type="button" id="open-cart" aria-haspopup="dialog" aria-controls="cart-dialog">
+          <span class="visually-hidden">Abrir carrinho, itens:</span>
+          <span aria-hidden="true">Carrinho</span>
+          <span class="badge" id="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <section class="hero container">
+        <h1 data-store-name>Desu Burguer</h1>
+        <p class="tagline">Hambúrguer feito na hora.</p>
+        <p id="store-status" class="store-status" hidden></p>
+      </section>
+
+      <nav class="category-nav container" id="category-nav" aria-label="Categorias do cardápio" hidden></nav>
+
+      <section id="cardapio" class="container" aria-labelledby="titulo-cardapio" tabindex="-1">
+        <h2 id="titulo-cardapio">Nosso cardápio</h2>
+        <div id="menu-status" class="state" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span> Carregando cardápio…
+        </div>
+        <div id="menu"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p><span data-store-name>Desu Burguer</span> · Pagamento na entrega ou na retirada.</p>
+        <p id="footer-contact" hidden></p>
+      </div>
+    </footer>
+
+    <!-- Personalização do produto -->
+    <dialog id="product-dialog" aria-labelledby="pd-title">
+      <form class="dialog-inner" id="product-form" method="dialog" novalidate>
+        <div class="dialog-header">
+          <h2 id="pd-title">Produto</h2>
+          <button class="icon-btn" type="button" data-close aria-label="Fechar"></button>
+        </div>
+        <div class="dialog-body">
+          <div id="pd-media"></div>
+          <p id="pd-desc" class="product-desc"></p>
+          <fieldset id="pd-addons-box" hidden>
+            <legend>Adicionais <span class="hint">(opcional)</span></legend>
+            <div id="pd-addons"></div>
+          </fieldset>
+          <div class="field">
+            <label for="pd-notes">Observação <span class="hint">(opcional, ex.: sem cebola)</span></label>
+            <textarea id="pd-notes" maxlength="140" rows="2" aria-describedby="pd-notes-count"></textarea>
+            <span id="pd-notes-count" class="hint">0/140</span>
+          </div>
+          <div class="field">
+            <span id="pd-qty-label" class="label">Quantidade</span>
+            <div class="stepper" role="group" aria-labelledby="pd-qty-label">
+              <button class="icon-btn" type="button" id="pd-minus" aria-label="Diminuir quantidade"></button>
+              <output id="pd-qty" aria-live="polite">1</output>
+              <button class="icon-btn" type="button" id="pd-plus" aria-label="Aumentar quantidade"></button>
+            </div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="btn btn-primary btn-block" type="submit" id="pd-submit">Adicionar ao carrinho</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Carrinho -->
+    <dialog id="cart-dialog" class="drawer" aria-labelledby="cart-title">
+      <div class="dialog-inner">
+        <div class="dialog-header">
+          <h2 id="cart-title">Seu carrinho</h2>
+          <button class="icon-btn" type="button" data-close aria-label="Fechar carrinho"></button>
+        </div>
+        <div class="dialog-body">
+          <p id="cart-empty" class="state">Seu carrinho está vazio.</p>
+          <ul class="cart-list" id="cart-list"></ul>
+          <div id="cart-alert" class="alert alert-error" role="alert"></div>
+        </div>
+        <div class="dialog-footer" id="cart-footer">
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd id="cart-subtotal">R$ 0,00</dd></div>
+          </dl>
+          <p class="notice">Taxas e descontos aparecem na revisão do pedido.</p>
+          <a class="btn btn-primary btn-block" href="/checkout.html" id="go-checkout">Finalizar pedido</a>
+          <button class="btn btn-secondary btn-block" type="button" data-close>Continuar escolhendo</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
