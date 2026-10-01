@@ -13,6 +13,8 @@ import { openDatabase } from '../server/db.js';
 loadEnvFile();
 const config = buildConfig();
 const reset = process.argv.includes('--reset');
+// --if-missing: só pergunta se ainda não existir nenhum administrador (usado pelo INICIAR-DESU-BURGUER.bat)
+const onlyIfMissing = process.argv.includes('--if-missing');
 
 // Saída "silenciável": enquanto a senha é digitada, nada aparece na tela.
 let muted = false;
@@ -37,6 +39,13 @@ async function ask(question, hidden = false) {
 }
 
 const db = openDatabase(path.join(config.dataDir, 'desu.db'));
+
+if (onlyIfMissing && db.prepare('SELECT COUNT(*) AS n FROM admin_users').get().n > 0) {
+  rl.close();
+  db.close();
+  process.exit(0);
+}
+if (onlyIfMissing) console.log('Primeiro acesso: crie o login do painel administrativo.\n');
 
 try {
   const email = (await ask('E-mail do administrador: ')).trim().toLowerCase();

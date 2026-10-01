@@ -11,6 +11,11 @@ carrinho, finalização com entrega ou retirada, acompanhamento do pedido e pain
 
 ---
 
+## Jeito mais fácil (Windows)
+
+Dê **dois cliques** em `INICIAR-DESU-BURGUER.bat`. Ele confere o Node.js, pede para criar o login do painel
+(só na primeira vez), inicia o sistema e abre <http://localhost:3000>. Para desligar, feche a janela preta.
+
 ## Como rodar no seu computador (Windows, macOS ou Linux)
 
 ### 1. Instale o Node.js
