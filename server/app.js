@@ -22,7 +22,7 @@ export function createApp({ config, db, log }) {
   const limiters = {
     api: createRateLimiter({ windowMs: 60_000, max: 300 }),
     quote: createRateLimiter({ windowMs: 60_000, max: 60 }),
-    order: createRateLimiter({ windowMs: 10 * 60_000, max: 10 }),
+    order: createRateLimiter({ windowMs: 10 * 60_000, max: config.orderRateLimit }),
     track: createRateLimiter({ windowMs: 60_000, max: 60 }),
     login: createRateLimiter({ windowMs: 15 * 60_000, max: 10 }),
     loginEmail: createRateLimiter({ windowMs: 15 * 60_000, max: 5 }),

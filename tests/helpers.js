@@ -12,7 +12,7 @@ import { createLogger } from '../server/log.js';
 export const ORIGIN = 'http://localhost:4321';
 export const ADMIN = { email: 'dono@desuburguer.test', password: 'uma frase bem longa e secreta 42' };
 
-export async function startServer({ env = {}, overrides = {}, withAdmin = true } = {}) {
+export async function startServer({ env = {}, overrides = {}, withAdmin = true, port = 0 } = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'desu-test-'));
   const config = buildConfig({ NODE_ENV: 'test', PORT: '4321', PUBLIC_ORIGIN: ORIGIN, DATA_DIR: dataDir, ...env }, overrides);
   const logs = [];
@@ -26,7 +26,7 @@ export async function startServer({ env = {}, overrides = {}, withAdmin = true }
     );
   }
   const server = http.createServer(createApp({ config, db, log }));
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  await new Promise((r) => server.listen(port, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}`;
   return {
     base,

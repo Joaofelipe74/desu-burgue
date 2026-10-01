@@ -56,6 +56,9 @@ export function buildConfig(env = process.env, overrides = {}) {
     sessionTtlHours: intFrom(env.SESSION_TTL_HOURS, 12, { min: 1, max: 72 }),
     sessionIdleMinutes: intFrom(env.SESSION_IDLE_MINUTES, 120, { min: 5, max: 1440 }),
     maxImageBytes: intFrom(env.MAX_IMAGE_MB, 5, { min: 1, max: 20 }) * 1024 * 1024,
+    // pedidos por IP a cada 10 minutos (anti-abuso). Atenção a redes móveis que
+    // compartilham IP (CGNAT) e a proxies: configure TRUST_PROXY corretamente.
+    orderRateLimit: intFrom(env.ORDER_RATE_LIMIT, 20, { min: 1, max: 1000 }),
     logLevel: env.LOG_LEVEL || (nodeEnv === 'test' ? 'silent' : 'info'),
     ...overrides,
   };

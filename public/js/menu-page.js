@@ -133,9 +133,12 @@ function openProduct(p) {
   $('#pd-desc').textContent = p.description || '';
   const media = $('#pd-media');
   media.textContent = '';
-  const m = productImage(p, { sizes: '560px', eager: true });
-  m.className = 'dialog-media';
-  media.append(m);
+  if (p.image) {
+    // sem foto, o diálogo não repete o aviso "Foto em breve" já mostrado no cartão
+    const m = productImage(p, { sizes: '560px', eager: true });
+    m.className = 'dialog-media';
+    media.append(m);
+  }
   const list = $('#pd-addons');
   list.textContent = '';
   $('#pd-addons-box').hidden = p.addons.length === 0;

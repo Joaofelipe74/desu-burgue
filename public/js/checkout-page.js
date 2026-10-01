@@ -153,6 +153,11 @@ function updateSubmitState() {
 
 // ---------- eventos ----------
 
+// Limpa a mensagem de erro do campo assim que o cliente corrige.
+form.addEventListener('input', (e) => {
+  if (e.target.id && e.target.getAttribute('aria-invalid') === 'true') setFieldError(e.target.id, '');
+});
+
 form.addEventListener('change', (e) => {
   if (e.target.name === 'fulfillment') {
     setFieldError('fulfillment', '');

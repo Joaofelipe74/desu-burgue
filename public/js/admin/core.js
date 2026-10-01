@@ -62,5 +62,5 @@ export async function withBusy(button, fn, alertEl) {
 }
 
 export function sectionTitle(text, ...extra) {
-  return h('div', { class: 'toolbar' }, h('h2', { text }), h('span', { class: 'spacer' }), ...extra);
+  return h('div', { class: 'toolbar section-title' }, h('h2', { text }), h('span', { class: 'spacer' }), ...extra);
 }

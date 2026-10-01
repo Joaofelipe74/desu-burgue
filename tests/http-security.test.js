@@ -45,7 +45,7 @@ function makePng(w, h) {
 describe('segurança HTTP', () => {
   let srv;
   before(async () => {
-    srv = await startServer();
+    srv = await startServer({ env: { ORDER_RATE_LIMIT: '10' } });
   });
   after(() => srv.close());
 
@@ -197,5 +197,15 @@ describe('configuração de produção', () => {
     assert.match(h['Strict-Transport-Security'], /max-age=31536000/);
     const { sessionCookie } = await import('../server/auth/sessions.js');
     assert.match(sessionCookie(cfg, 'abc', 60), /^__Host-desu_sid=abc; Path=\/; HttpOnly; SameSite=Strict; Max-Age=60; Secure$/);
+  });
+});
+
+describe('IP do cliente atrás de proxy', () => {
+  it('ignora X-Forwarded-For forjado sem TRUST_PROXY e usa o salto confiável com TRUST_PROXY', async () => {
+    const { clientIp } = await import('../server/http/security.js');
+    const req = { socket: { remoteAddress: '10.0.0.1' }, headers: { 'x-forwarded-for': '6.6.6.6, 2.2.2.2' } };
+    assert.equal(clientIp(req, 0), '10.0.0.1', 'sem proxy configurado, o cabeçalho é ignorado');
+    assert.equal(clientIp(req, 1), '2.2.2.2', 'com 1 proxy, usa o IP que o proxy viu');
+    assert.equal(clientIp(req, 3), '10.0.0.1', 'cadeia menor que o esperado: não confia');
   });
 });
