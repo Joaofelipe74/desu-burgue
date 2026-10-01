@@ -1,0 +1,123 @@
+# Relatório da revisão — Desu Burguer (01/10/2026)
+
+## 1. O que existia antes
+
+A pasta `Desu-burguer-estudo` tinha só **2 arquivos**: `index.html` e `style.css`.
+Não havia servidor, banco de dados, JavaScript, imagens, documentação nem versões duplicadas.
+Os originais estão preservados sem alteração em `_backup-original/` e no primeiro commit do Git
+("Versão original do projeto").
+
+Erros encontrados no `index.html` original:
+
+| # | Problema | Efeito |
+|---|---|---|
+| 1 | `< html lang="pt-BR">` (espaço depois do `<`) | Tag inválida |
+| 2 | `charset="UTF- 8"` | Codificação inválida; acentos podiam quebrar |
+| 3 | `<meta name="viewport" ...` sem `>` | Engolia a linha seguinte (o `<title>`) |
+| 4 | `<link ... hrf="style.css">` (em vez de `href`) e fora do `<head>` | **O CSS nunca era carregado** |
+| 5 | `</body></html>` fechados antes do cardápio | O `<article>` ficava fora do documento |
+| 6 | `</main>` sem `<main>` de abertura | HTML inválido |
+| 7 | "Hambrugueria", "hora1", "cardapio" | Erros de digitação |
+| 8 | "Pão, carne, queijo e **queijo** crocante" no X-Bacon | Provável erro: o X-Bacon não citava bacon (ver perguntas) |
+| 9 | Preço "24,90" sem "R$" e botão "Adicionar ao carrinho" sem nenhuma ação | Não havia carrinho |
+| 10 | Título "Minha Hamburgueria", diferente do nome "Desu Burguer" | Identidade inconsistente |
+
+## 2. Decisões técnicas
+
+- **Node.js puro, sem dependências obrigatórias.** O ambiente de trabalho não tinha acesso ao repositório npm.
+  Em vez de entregar código não testado com Express e outras bibliotecas, usei só o que já vem no Node.js 22.13+:
+  servidor `node:http`, banco SQLite `node:sqlite`, criptografia `node:crypto` e testes `node:test`.
+  Vantagens: roda sem `npm install` e quase não há cadeia de dependências para manter (OWASP A03:2025).
+- **SQLite** num arquivo (`data/desu.db`): simples de copiar e fazer backup, suficiente para uma loja.
+- **Frontend em HTML, CSS e JavaScript sem build**, aproveitando a estrutura e as cores do projeto original
+  (`#161616`, `#262626`, `#ffb703`).
+- **Dados iniciais:** só o que existia no original, a categoria "Hambúrgueres" e o **X-Bacon a R$ 24,90**.
+  Nenhum preço, produto, cupom ou taxa foi inventado. O resto é cadastrado por você no painel.
+
+## 3. Funcionalidades implementadas
+
+**Cliente**
+
+- Cardápio por categorias, com foto (ou aviso "Foto em breve"), descrição, preço e selo "Indisponível".
+- Personalização: adicionais com preço, quantidade e observação (ex.: "sem cebola").
+- Carrinho com aumentar/diminuir/remover e subtotal. Fica salvo no navegador e sincroniza entre abas.
+- Checkout:
+  - nome e telefone;
+  - **retirada ou entrega**, com endereço só na entrega;
+  - forma de pagamento e troco;
+  - cupom;
+  - observações;
+  - revisão com valores **calculados pelo servidor**.
+- Proteções no checkout: botão desativado durante o envio, mensagens claras de erro e carregamento,
+  e recálculo com aviso se o preço mudar.
+- Página de acompanhamento com linha do tempo do status. Atualiza sozinha a cada 20 s.
+
+**Painel administrativo (`/admin/`)**
+
+- Login com proteção contra força bruta; sessão segura; logout; troca de senha.
+- Pedidos:
+  - lista "em aberto" ou por status, com atualização automática;
+  - destaque para pedidos novos;
+  - botões que só oferecem o próximo status válido;
+  - cancelamento com confirmação em dois cliques.
+- Cardápio: categorias (criar, renomear, ordenar, ocultar, excluir) e produtos (criar, editar, preço, ordem,
+  disponibilidade com um clique, arquivar/restaurar, adicionais permitidos, foto com texto alternativo e selo de ilustrativa).
+- Adicionais, cupons (percentual ou valor fixo, mínimo, limite de usos, validade) e configurações
+  (loja aberta/fechada, retirada, entrega, taxa, pedido mínimo, formas de pagamento, telefone).
+
+**Operação**
+
+- `create-admin` (sem senha padrão), `backup`, `import-image` e `purge-personal-data` (retenção LGPD).
+
+## 4. Testes executados e resultados
+
+| Verificação | Resultado |
+|---|---|
+| `npm test`: 43 testes automáticos (cálculo, fluxo completo com banco real, adulteração de valores, duplicidade, cupons, acesso administrativo, CSRF, sessão, bloqueio de conta, limites, cabeçalhos, path traversal, uploads, erros, configuração de produção, IP atrás de proxy) | **43/43 passaram**, tanto **com** quanto **sem** o `sharp` |
+| `npm run test:e2e`: Chromium em **computador (1280 px)** e **celular (390 px)** | **18/18 etapas passaram**, sem erros de JavaScript nem violações de CSP no console |
+| Itens cobertos pelo E2E | Cardápio → personalização → carrinho → checkout (validação, entrega com taxa, retirada com troco) → pedido → acompanhamento → painel (login errado/certo, mudança de status vista pelo cliente, envio de imagem com selo "Imagem ilustrativa", indisponibilidade, abas, painel no celular, logout) |
+| Verificações de layout no E2E | Sem rolagem horizontal, todas as imagens com `alt`, nenhuma imagem quebrada, todos os campos com rótulo |
+| Modo produção com HTTPS (certificado de teste) | Inicia só com `PUBLIC_ORIGIN` https; HSTS e cookie `__Host-` com `Secure`; login, pedido e mudança de status funcionando; origem `http://localhost` recusada (403); log sem senha, token ou telefone |
+| Scripts | `create-admin` (recusa senha fraca e e-mail duplicado), `backup`, `import-image` (com e sem `sharp`) e `purge-personal-data` funcionaram |
+| Análise estática (ESLint 10, regras de erros e de segurança, como proibição de `innerHTML`) e `node --check` | Sem problemas (44 arquivos) |
+
+Os testes rodaram em Linux com Node.js 22.22. As capturas de tela do E2E ficam em `test-results/e2e/` quando você roda o teste.
+
+## 5. Pendências e o que NÃO pude verificar
+
+- **Execução no seu Windows:** testado em Linux. O código usa caminhos e comandos compatíveis com Windows, mas rode `npm test` aí para confirmar.
+- **Versão do Node no seu computador:** precisa ser **22.13 ou mais nova** (`node --version`).
+- **`npm install` do `sharp` e `npm audit`:** não foi possível acessar o repositório npm daqui. Rode os dois no seu computador.
+- **Imagens:** nenhuma imagem do ChatGPT estava disponível. Veja a lista exata em [`IMAGENS.md`](IMAGENS.md).
+- **Navegadores:** testado em Chromium. Safari (iPhone) e Firefox não foram testados.
+- **Leitor de tela:** a estrutura segue boas práticas (rótulos, `alt`, foco visível, `aria-live`, tamanho de toque de 44 px), mas não foi testada com NVDA ou VoiceOver.
+- **Hospedagem real, carga/volume e notificações:** nada foi publicado. Nenhuma mensagem é enviada a clientes. Não há integração com WhatsApp nem pagamento online.
+- **`node:sqlite`** é marcado como "experimental" pelo Node. O aviso fica oculto nos comandos `npm`. O acesso ao banco está isolado e testado.
+
+## 6. Perguntas para você (decisões de negócio)
+
+Nenhuma delas impede o sistema de funcionar. Os valores atuais podem ser mudados no painel.
+
+1. **X-Bacon:** a descrição original dizia "queijo e queijo crocante". Troquei para "**bacon** crocante". Está certo?
+2. **Grafia do nome:** "Desu **Burguer**" (com "u") é a grafia oficial?
+3. **Entrega:** começa **desligada**. Qual a taxa? É fixa ou varia por bairro (hoje o sistema só tem taxa fixa)? Há área máxima de entrega?
+4. **Pedido mínimo:** existe? Hoje está em R$ 0,00.
+5. **Pagamento:** as três opções (dinheiro, cartão na maquininha, Pix na entrega/retirada) estão ativas. Todas valem? Deseja pagamento **online** no futuro?
+6. **Retirada:** qual o endereço e o telefone de contato a exibir?
+7. **Horário:** hoje a loja é aberta/fechada manualmente no painel. Quer abertura e fechamento automáticos por horário?
+8. **Cardápio completo:** quais outros produtos, categorias, adicionais e preços? (podem ser cadastrados no painel)
+9. **Retenção de dados:** por quantos dias guardar nome, telefone e endereço de pedidos finalizados? É preciso uma política de privacidade.
+10. **Hospedagem:** onde pretende publicar? (precisa rodar Node.js e ter disco persistente)
+11. **Avisos ao cliente:** deseja aviso automático (ex.: WhatsApp) quando o status mudar?
+
+## 7. Segurança
+
+O detalhamento está em [`SEGURANCA.md`](SEGURANCA.md). Riscos que continuam existindo:
+
+- **Sem segundo fator (2FA)** no painel: quem obtiver a senha do administrador entra.
+- **Bloqueio de conta pode ser abusado:** alguém pode errar a senha de propósito e travar o login do administrador por 15 minutos.
+- **Limites de tentativas ficam na memória** do processo: zeram ao reiniciar e não funcionam com várias instâncias.
+- **Proxy mal configurado:** com `TRUST_PROXY` errado, todos os clientes parecem ter o mesmo IP e o limite de pedidos (20 a cada 10 min) vale para a loja inteira.
+- **Pedidos falsos:** qualquer pessoa pode fazer pedido sem conta. Há limite por IP, mas não confirmação por SMS ou WhatsApp.
+- **Cópias e backups do banco contêm dados pessoais.** Proteja o servidor e os backups.
+- Não houve auditoria nem teste de invasão independente.
