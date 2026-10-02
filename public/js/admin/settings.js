@@ -28,7 +28,11 @@ export function createSettingsTab(panel) {
       cartao: checkbox('Cartão (maquininha na entrega/retirada)', s.payment_methods.cartao),
       pix: checkbox('Pix (na entrega/retirada)', s.payment_methods.pix),
       phone: h('input', { type: 'text', maxlength: 30, value: s.contact_phone }),
+      whatsapp: h('input', { type: 'tel', inputmode: 'tel', maxlength: 20, placeholder: '(11) 91234-5678', value: s.whatsapp }),
+      hours: h('input', { type: 'text', maxlength: 120, placeholder: 'Ex.: Terça a domingo, das 18h às 23h', value: s.opening_hours }),
+      about: h('textarea', { maxlength: 400, rows: 3 }),
     };
+    i.about.value = s.about_text;
     const save = h('button', { class: 'btn btn-primary', type: 'submit', text: 'Salvar configurações' });
     form.append(
       field('Nome da loja', i.storeName),
@@ -51,7 +55,14 @@ export function createSettingsTab(panel) {
         h('div', { class: 'field' }, i.cartao.el),
         h('div', { class: 'field' }, i.pix.el)
       ),
-      field('Telefone de contato da loja', i.phone, 'opcional, aparece no site'),
+      h(
+        'fieldset',
+        {},
+        h('legend', { text: 'Página inicial e contato' }),
+        field('Horário de funcionamento', i.hours, 'aparece no topo e no rodapé'),
+        field('Texto "Sobre"', i.about, 'até 400 caracteres'),
+        h('div', { class: 'row row-2' }, field('Telefone de contato', i.phone, 'opcional'), field('WhatsApp (com DDD)', i.whatsapp, 'opcional; cria o botão "Falar no WhatsApp"'))
+      ),
       save
     );
     form.onsubmit = (e) => {
@@ -73,6 +84,9 @@ export function createSettingsTab(panel) {
             min_order_cents: min,
             payment_methods: { dinheiro: i.dinheiro.input.checked, cartao: i.cartao.input.checked, pix: i.pix.input.checked },
             contact_phone: i.phone.value,
+            whatsapp: i.whatsapp.value.trim(),
+            opening_hours: i.hours.value,
+            about_text: i.about.value,
           },
         });
         alert.textContent = '';

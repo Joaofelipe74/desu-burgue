@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de milk-shake">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="70" ry="13" fill="#000" opacity=".45"/><g transform="translate(200,258)"><rect x="12" y="-232" width="9" height="120" rx="4" fill="#e2483d" transform="rotate(14 16 -170)"/><path d="M-56,-180 h112 l-14,176 q-1,4 -5,4 h-74 q-4,0 -5,-4z" fill="#ffffff" opacity=".18"/><path d="M-50,-150 h100 l-11,142 q-1,4 -5,4 h-68 q-4,0 -5,-4z" fill="#e9a0b4"/><path d="M-40,-140 l8,124" stroke="#ffffff" stroke-width="6" opacity=".25" stroke-linecap="round"/><path d="M-56,-178 q-6,-34 26,-36 q8,-26 34,-18 q28,-12 38,16 q30,4 14,38z" fill="#fff8ec"/><circle cx="6" cy="-232" r="11" fill="#d62839"/><path d="M6,-242 q4,-14 14,-18" stroke="#3f7d2a" stroke-width="3" fill="none"/></g>
+</svg>

@@ -27,6 +27,7 @@ async function loadMenu() {
   }
   productsById = new Map(menu.categories.flatMap((c) => c.products).map((p) => [p.id, p]));
   renderStore();
+  renderFeatured();
   renderMenu();
   renderCart();
   if (location.hash === '#carrinho') {
@@ -43,11 +44,51 @@ function renderStore() {
   st.hidden = false;
   st.className = `store-status ${s.acceptingOrders ? 'is-open' : 'is-closed'}`;
   st.textContent = s.acceptingOrders ? 'Aberto para pedidos' : s.closedMessage || 'Fechado no momento';
-  if (s.contactPhone) {
-    const fc = $('#footer-contact');
-    fc.hidden = false;
-    fc.textContent = `Contato: ${s.contactPhone}`;
-  }
+
+  const hours = $('#hero-hours');
+  hours.hidden = !s.openingHours;
+  hours.textContent = s.openingHours ? `Horário: ${s.openingHours}` : '';
+
+  // Só aceita link do WhatsApp no formato gerado pelo servidor
+  const wa = $('#hero-whatsapp');
+  const waOk = /^https:\/\/wa\.me\/\d{12,13}$/.test(s.whatsappUrl || '');
+  wa.hidden = !waOk;
+  if (waOk) wa.href = s.whatsappUrl;
+
+  if (s.aboutText) $('#about-text').textContent = s.aboutText;
+
+  const PAY = { dinheiro: 'dinheiro', cartao: 'cartão', pix: 'Pix' };
+  const names = s.paymentMethods.map((m) => PAY[m.id] || m.label);
+  let payments = names.length > 1 ? `${names.slice(0, -1).join(', ')} ou ${names.at(-1)}` : names[0] || '';
+  payments = payments.charAt(0).toUpperCase() + payments.slice(1);
+  const cards = [
+    s.openingHours && ['Horário', s.openingHours],
+    s.deliveryEnabled && [
+      'Entrega',
+      `${s.deliveryFeeCents ? `Taxa de ${money(s.deliveryFeeCents)}` : 'Sem taxa de entrega'}${s.minOrderCents ? ` · pedido mínimo ${money(s.minOrderCents)}` : ''}`,
+    ],
+    s.pickupEnabled && ['Retirada no balcão', s.pickupAddress || 'Sem taxa. Retire no balcão da loja.'],
+    payments && ['Pagamento', `${payments}, na entrega ou na retirada.`],
+  ].filter(Boolean);
+  const grid = $('#info-grid');
+  grid.textContent = '';
+  for (const [title, text] of cards) grid.append(h('div', { class: 'info-card' }, h('h3', { text: title }), h('p', { text })));
+
+  const fc = $('#footer-contact');
+  fc.textContent = '';
+  if (s.openingHours) fc.append(h('li', { text: s.openingHours }));
+  if (s.pickupAddress) fc.append(h('li', { text: s.pickupAddress }));
+  if (s.contactPhone) fc.append(h('li', { text: `Telefone: ${s.contactPhone}` }));
+  if (waOk) fc.append(h('li', {}, h('a', { href: s.whatsappUrl, target: '_blank', rel: 'noopener noreferrer', text: 'WhatsApp' })));
+  if (!fc.children.length) fc.append(h('li', { text: 'Pedidos pelo site, com acompanhamento em tempo real.' }));
+}
+
+function renderFeatured() {
+  const featured = menu.categories.flatMap((c) => c.products).filter((p) => p.featured && p.available).slice(0, 4);
+  const box = $('#featured');
+  box.textContent = '';
+  $('#destaques').hidden = featured.length === 0;
+  for (const p of featured) box.append(productCard(p, 'd'));
 }
 
 function renderMenu() {
@@ -76,16 +117,16 @@ function renderMenu() {
   }
 }
 
-function productCard(p) {
+function productCard(p, prefix = 'p') {
   const canOrder = p.available && menu.store.acceptingOrders;
   return h(
     'article',
-    { class: `product-card${p.available ? '' : ' is-unavailable'}`, 'aria-labelledby': `p-${p.id}` },
+    { class: `product-card${p.available ? '' : ' is-unavailable'}`, 'aria-labelledby': `${prefix}-${p.id}` },
     productImage(p),
     h(
       'div',
       { class: 'product-body' },
-      h('h4', { id: `p-${p.id}`, class: 'product-name', text: p.name }),
+      h(prefix === 'd' ? 'h3' : 'h4', { id: `${prefix}-${p.id}`, class: 'product-name', text: p.name }),
       p.description ? h('p', { class: 'product-desc', text: p.description }) : h('p', { class: 'product-desc' }),
       h(
         'div',

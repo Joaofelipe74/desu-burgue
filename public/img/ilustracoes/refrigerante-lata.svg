@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de lata de refrigerante">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="60" ry="13" fill="#000" opacity=".45"/><g transform="translate(200,258)"><path d="M-48,-190 h96 v180 q0,10 -10,10 h-76 q-10,0 -10,-10z" fill="#c62f26"/><ellipse cx="0" cy="-190" rx="48" ry="10" fill="#cfcfcf"/><ellipse cx="0" cy="-191" rx="36" ry="6" fill="#a9a9a9"/><rect x="-12" y="-196" width="24" height="7" rx="3" fill="#e6e6e6"/><path d="M-48,-120 q48,30 96,0 v34 q-48,30 -96,0z" fill="#ffffff"/><path d="M-48,-104 q48,26 96,0" stroke="#ffb703" stroke-width="5" fill="none"/><rect x="-36" y="-180" width="10" height="160" rx="5" fill="#ffffff" opacity=".18"/></g>
+</svg>

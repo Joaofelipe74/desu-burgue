@@ -9,6 +9,12 @@ carrinho, finalização com entrega ou retirada, acompanhamento do pedido e pain
 
 > A versão original (2 arquivos) está preservada em `_backup-original/` e também no primeiro commit do Git.
 
+> **Cardápio de exemplo:** na primeira vez que o sistema abre, ele cadastra um cardápio de exemplo
+> (24 itens em 5 categorias, adicionais, destaques, taxa de entrega de R$ 6,00 e horário "Terça a domingo, das 18h às 23h").
+> Os **preços são sugestões**: revise tudo no painel (`/admin/` → Cardápio, Adicionais e Configurações) antes de atender clientes reais.
+> O X-Bacon original mantém o preço de R$ 24,90. Os produtos usam **ilustrações próprias** (desenhos) com o selo
+> "Imagem ilustrativa" até você enviar as fotos.
+
 ---
 
 ## Jeito mais fácil (Windows)

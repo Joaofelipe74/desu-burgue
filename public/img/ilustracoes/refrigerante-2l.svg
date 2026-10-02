@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de garrafa de refrigerante">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="60" ry="13" fill="#000" opacity=".45"/><g transform="translate(200,262) scale(1.05)"><rect x="-14" y="-228" width="28" height="16" rx="3" fill="#d63a2f"/><path d="M-12,-212 h24 q0,22 22,40 q10,8 10,24 v136 q0,12 -12,12 h-64 q-12,0 -12,-12 v-136 q0,-16 10,-24 q22,-18 22,-40z" fill="#3b1d14"/><rect x="-44" y="-120" width="88" height="46" rx="4" fill="#e2483d"/><path d="M-30,-97 h60" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/><path d="M-30,-180 q-6,40 0,150" stroke="#ffffff" stroke-width="5" opacity=".18" fill="none"/></g>
+</svg>

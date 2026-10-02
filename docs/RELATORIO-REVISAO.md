@@ -121,3 +121,25 @@ O detalhamento está em [`SEGURANCA.md`](SEGURANCA.md). Riscos que continuam exi
 - **Pedidos falsos:** qualquer pessoa pode fazer pedido sem conta. Há limite por IP, mas não confirmação por SMS ou WhatsApp.
 - **Cópias e backups do banco contêm dados pessoais.** Proteja o servidor e os backups.
 - Não houve auditoria nem teste de invasão independente.
+
+## 8. Atualização de 02/10/2026: cardápio de exemplo, página inicial e ilustrações
+
+Feita a pedido do dono ("o site está incompleto"; opção escolhida: exemplo com preços sugeridos).
+
+- **Cardápio de exemplo**, aplicado uma única vez em cada banco (`server/sample-menu.js`):
+  - 5 categorias e 24 produtos;
+  - 7 adicionais vinculados a cada tipo de produto;
+  - 4 destaques;
+  - entrega ligada com taxa de R$ 6,00;
+  - horário e texto "Sobre".
+  
+  O X-Bacon original manteve o preço e os textos. **Todos os preços são sugestões a revisar no painel.**
+- **Página inicial:** banner com ilustração, destaques da casa, menu de categorias, "Como funciona", "Sobre",
+  cartões de horário/entrega/retirada/pagamento, botão de WhatsApp (só aparece se configurado) e rodapé completo.
+- **Celular:** no cardápio, a lista fica compacta (imagem à esquerda) e os destaques viram um carrossel.
+- **Ilustrações:** 22 desenhos próprios em SVG, escolhidos no painel e exibidos sempre com o selo "Imagem ilustrativa".
+  Uma foto enviada pelo painel tem prioridade.
+- **Painel:**
+  - produto: campos de ilustração e destaque;
+  - configurações: horário, texto "Sobre" e WhatsApp (validado e transformado em link `wa.me` pelo servidor).
+- **Testes:** 48 testes automáticos (5 novos sobre o cardápio de exemplo, incluindo cálculo de pedido e validação de ilustração/WhatsApp) e 18 etapas E2E passando. Nenhum erro de console/CSP.

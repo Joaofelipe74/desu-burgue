@@ -9,6 +9,7 @@ export function createCatalogTab(panel) {
   let categories = [];
   let products = [];
   let addons = [];
+  let illustrations = [];
   let showArchived = false;
 
   const alert = h('div', { class: 'alert alert-error', role: 'alert' });
@@ -68,6 +69,7 @@ export function createCatalogTab(panel) {
       ]);
       categories = c.categories;
       products = p.products;
+      illustrations = p.illustrations || [];
       addons = a.addons;
       renderCategories();
       renderProducts();
@@ -165,7 +167,12 @@ export function createCatalogTab(panel) {
             'div',
             { class: 'grow' },
             h('strong', { text: p.name }),
-            h('div', { class: 'muted small', text: `${p.categoryName} · ${money(p.priceCents)}${p.archived ? ' · arquivado' : ''}${p.image ? '' : ' · sem foto'}` })
+            h('div', {
+              class: 'muted small',
+              text: `${p.categoryName} · ${money(p.priceCents)}${p.featured ? ' · destaque' : ''}${p.archived ? ' · arquivado' : ''}${
+                p.image ? (p.image.kind === 'illustration' ? ' · ilustração' : ' · foto enviada') : ' · sem imagem'
+              }`,
+            })
           ),
           avail.el,
           h('button', { class: 'btn btn-secondary btn-small', type: 'button', text: 'Editar', onclick: () => openEditor(p) })
@@ -209,6 +216,13 @@ export function createCatalogTab(panel) {
       available: checkbox('Disponível para pedidos', p ? p.available : true),
       imageAlt: h('input', { type: 'text', maxlength: 160, value: p?.imageAlt || '' }),
       isReal: checkbox('É foto real deste produto (desmarcado = mostra "Imagem ilustrativa")', p ? !p.imageIsIllustrative : false),
+      featured: checkbox('Mostrar em "Destaques da casa" na página inicial', p ? p.featured : false),
+      illustration: h(
+        'select',
+        {},
+        h('option', { value: '', text: 'Nenhuma (mostra "Foto em breve")' }),
+        illustrations.map((it) => h('option', { value: it.key, text: it.label, selected: p ? p.illustration === it.key : false }))
+      ),
       file: h('input', { type: 'file', accept: ACCEPTED.join(',') }),
     };
     inputs.description.value = p?.description || '';
@@ -243,8 +257,12 @@ export function createCatalogTab(panel) {
       });
 
     const imageActions = h('div', { class: 'toolbar' });
-    if (p?.image) {
-      const rm = h('button', { class: 'btn btn-danger btn-small', type: 'button', text: 'Remover imagem' });
+    inputs.illustration.addEventListener('change', () => {
+      if (inputs.file.files[0] || p?.image?.kind === 'upload') return; // a foto enviada tem prioridade
+      preview.src = inputs.illustration.value ? `/img/ilustracoes/${inputs.illustration.value}.svg` : '/img/placeholder-produto.svg';
+    });
+    if (p?.image?.kind === 'upload') {
+      const rm = h('button', { class: 'btn btn-danger btn-small', type: 'button', text: 'Remover foto enviada' });
       rm.addEventListener('click', () =>
         withBusy(rm, async () => {
           await adminApi(`/api/admin/products/${p.id}/image`, { method: 'DELETE' });
@@ -272,7 +290,7 @@ export function createCatalogTab(panel) {
       field('Nome', inputs.name),
       h('div', { class: 'row row-2' }, field('Categoria', inputs.categoryId), field('Preço (R$)', inputs.price)),
       field('Descrição', inputs.description, 'até 300 caracteres'),
-      h('div', { class: 'row row-2' }, field('Ordem no cardápio', inputs.sortOrder), h('div', { class: 'field' }, inputs.available.el)),
+      h('div', { class: 'row row-2' }, field('Ordem no cardápio', inputs.sortOrder), h('div', { class: 'field' }, inputs.available.el, inputs.featured.el)),
       h(
         'fieldset',
         {},
@@ -284,7 +302,8 @@ export function createCatalogTab(panel) {
         {},
         h('legend', { text: 'Imagem' }),
         preview,
-        field('Enviar nova imagem', inputs.file, 'JPG, PNG ou WebP, até 5 MB'),
+        field('Enviar foto', inputs.file, 'JPG, PNG ou WebP, até 5 MB; tem prioridade sobre a ilustração'),
+        field('Ilustração (usada quando não há foto)', inputs.illustration),
         h('p', {
           class: 'hint',
           text: state.imageOptimization
@@ -317,6 +336,8 @@ export function createCatalogTab(panel) {
       available: inputs.available.input.checked,
       imageAlt: inputs.imageAlt.value,
       imageIsIllustrative: !inputs.isReal.input.checked,
+      illustration: inputs.illustration.value,
+      featured: inputs.featured.input.checked,
       addonIds: [...peBody.querySelectorAll('input[name="pe-addon"]:checked')].map((i) => Number(i.value)),
     };
     withBusy(

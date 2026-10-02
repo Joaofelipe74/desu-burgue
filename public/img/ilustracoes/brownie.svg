@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de brownie com sorvete">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="135" ry="13" fill="#000" opacity=".45"/><ellipse cx="200" cy="248" rx="130" ry="24" fill="#efe6d8"/><ellipse cx="200" cy="244" rx="114" ry="17" fill="#fff8ec"/><path d="M120,236 l20,-70 h120 l20,70z" fill="#4a2a1c"/><path d="M140,166 h120 l-10,-22 h-100z" fill="#5e3624"/><path d="M150,190 h20 M200,206 h24 M236,184 h16" stroke="#6e4430" stroke-width="5" stroke-linecap="round"/><path d="M180,150 q-4,-38 34,-40 q38,2 34,40 q-8,-6 -14,0 q-8,-8 -18,0 q-10,-8 -18,0 q-10,-6 -18,0z" fill="#fff3d6"/><path d="M196,126 q10,-10 22,-8" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M180,148 q10,20 4,40 M240,150 q-4,24 6,36" stroke="#3a2016" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

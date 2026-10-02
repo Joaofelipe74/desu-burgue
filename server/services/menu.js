@@ -1,20 +1,36 @@
 // Cardápio: categorias, produtos e adicionais.
 import { nowIso, transaction } from '../db.js';
 import { badRequest, conflict, notFound } from '../http/errors.js';
-import { boolean, idList, integer, onlyKeys, text } from '../validation.js';
+import { boolean, idList, integer, oneOf, onlyKeys, text } from '../validation.js';
+import { ILLUSTRATIONS } from './illustrations.js';
 
 const bool = (v) => v === 1;
 
+/** Foto enviada pelo painel; se não houver, a ilustração escolhida; senão null (aviso "Foto em breve"). */
 function imageInfo(p) {
-  if (!p.image_file) return null;
-  return {
-    src: `/uploads/products/${p.image_file}`,
-    thumbSrc: p.image_thumb_file ? `/uploads/products/${p.image_thumb_file}` : null,
-    width: p.image_width,
-    height: p.image_height,
-    alt: p.image_alt || p.name,
-    illustrative: bool(p.image_is_illustrative),
-  };
+  if (p.image_file) {
+    return {
+      kind: 'upload',
+      src: `/uploads/products/${p.image_file}`,
+      thumbSrc: p.image_thumb_file ? `/uploads/products/${p.image_thumb_file}` : null,
+      width: p.image_width,
+      height: p.image_height,
+      alt: p.image_alt || p.name,
+      illustrative: bool(p.image_is_illustrative),
+    };
+  }
+  if (p.illustration && ILLUSTRATIONS[p.illustration]) {
+    return {
+      kind: 'illustration',
+      src: `/img/ilustracoes/${p.illustration}.svg`,
+      thumbSrc: null,
+      width: 400,
+      height: 300,
+      alt: p.image_alt || `Ilustração de ${p.name}`,
+      illustrative: true, // desenho nunca é apresentado como foto real
+    };
+  }
+  return null;
 }
 
 function addonLinks(db) {
@@ -55,6 +71,7 @@ export function getPublicMenu(db) {
           description: p.description,
           priceCents: p.price_cents,
           available: bool(p.available),
+          featured: bool(p.featured),
           image: imageInfo(p),
           addons: [...(links.get(p.id) || [])]
             .map((id) => addons.get(id))
@@ -170,6 +187,8 @@ export function listProducts(db) {
       image: imageInfo(p),
       imageAlt: p.image_alt,
       imageIsIllustrative: bool(p.image_is_illustrative),
+      illustration: p.illustration || '',
+      featured: bool(p.featured),
       addonIds: [...(links.get(p.id) || [])],
     }));
 }
@@ -177,7 +196,7 @@ export function listProducts(db) {
 function productInput(db, body, partial) {
   onlyKeys(
     body,
-    ['categoryId', 'name', 'description', 'priceCents', 'available', 'archived', 'sortOrder', 'imageAlt', 'imageIsIllustrative', 'addonIds'],
+    ['categoryId', 'name', 'description', 'priceCents', 'available', 'archived', 'sortOrder', 'imageAlt', 'imageIsIllustrative', 'addonIds', 'illustration', 'featured'],
     'produto'
   );
   const out = {};
@@ -195,6 +214,11 @@ function productInput(db, body, partial) {
   if (!partial || 'imageIsIllustrative' in body) {
     out.image_is_illustrative = boolean(body.imageIsIllustrative ?? true, { field: 'imagem ilustrativa' }) ? 1 : 0;
   }
+  if (!partial || 'illustration' in body) {
+    const ill = body.illustration ?? '';
+    out.illustration = ill === '' ? null : oneOf(ill, Object.keys(ILLUSTRATIONS), { field: 'a ilustração' });
+  }
+  if (!partial || 'featured' in body) out.featured = boolean(body.featured ?? false, { field: 'destaque' }) ? 1 : 0;
   let addonIds;
   if (!partial || 'addonIds' in body) {
     addonIds = idList(body.addonIds, { field: 'os adicionais', max: 50 });

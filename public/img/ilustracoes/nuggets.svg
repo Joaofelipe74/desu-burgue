@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de nuggets">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="130" ry="13" fill="#000" opacity=".45"/><ellipse cx="200" cy="245" rx="135" ry="26" fill="#efe6d8"/><ellipse cx="200" cy="240" rx="120" ry="20" fill="#fff8ec"/><path d="M112,222 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M122,214 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M157,228 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M167,220 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M204,224 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M214,216 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M132,196 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M142,188 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M180,200 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M190,192 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M156,172 q-4,-22 22,-24 q26,-4 32,14 q8,22 -16,28 q-34,8 -38,-18z" fill="#d6912f"/><path d="M166,164 q8,-10 22,-8" fill="none" stroke="#f0b552" stroke-width="4" stroke-linecap="round"/><path d="M268,232 h56 l-6,26 h-44z" fill="#ffffff"/><ellipse cx="296" cy="232" rx="28" ry="8" fill="#e2483d"/>
+</svg>

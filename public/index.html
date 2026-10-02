@@ -19,6 +19,11 @@
           <span class="brand-mark" aria-hidden="true">D</span>
           <span data-store-name>Desu Burguer</span>
         </a>
+        <nav class="header-links" aria-label="Seções da página">
+          <a href="#cardapio">Cardápio</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#sobre">Sobre</a>
+        </nav>
         <button class="btn btn-primary cart-button" type="button" id="open-cart" aria-haspopup="dialog" aria-controls="cart-dialog">
           <span class="visually-hidden">Abrir carrinho, itens:</span>
           <span aria-hidden="true">Carrinho</span>
@@ -28,27 +33,93 @@
     </header>
 
     <main id="conteudo">
-      <section class="hero container">
-        <h1 data-store-name>Desu Burguer</h1>
-        <p class="tagline">Hambúrguer feito na hora.</p>
-        <p id="store-status" class="store-status" hidden></p>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-text">
+            <p class="eyebrow">Hamburgueria · delivery e retirada</p>
+            <h1 data-store-name>Desu Burguer</h1>
+            <p class="tagline">Hambúrguer feito na hora. Monte seu pedido, escolha entregar ou retirar e acompanhe tudo por aqui.</p>
+            <p id="store-status" class="store-status" hidden></p>
+            <p id="hero-hours" class="hero-hours" hidden></p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-large" href="#cardapio">Ver cardápio</a>
+              <a class="btn btn-secondary btn-large" id="hero-whatsapp" href="#" target="_blank" rel="noopener noreferrer" hidden>Falar no WhatsApp</a>
+            </div>
+          </div>
+          <figure class="hero-art">
+            <img src="/img/ilustracoes/hero.svg" width="400" height="300" alt="Ilustração de hambúrguer com batata frita e refrigerante" />
+            <figcaption class="illustrative-tag">Imagem ilustrativa</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="destaques" class="container section" aria-labelledby="titulo-destaques" hidden>
+        <h2 id="titulo-destaques">Destaques da casa</h2>
+        <div class="product-grid" id="featured"></div>
       </section>
 
       <nav class="category-nav container" id="category-nav" aria-label="Categorias do cardápio" hidden></nav>
 
-      <section id="cardapio" class="container" aria-labelledby="titulo-cardapio" tabindex="-1">
+      <section id="cardapio" class="container section" aria-labelledby="titulo-cardapio" tabindex="-1">
         <h2 id="titulo-cardapio">Nosso cardápio</h2>
         <div id="menu-status" class="state" role="status" aria-live="polite">
           <span class="spinner" aria-hidden="true"></span> Carregando cardápio…
         </div>
         <div id="menu"></div>
       </section>
+
+      <section id="como-funciona" class="container section" aria-labelledby="titulo-como">
+        <h2 id="titulo-como">Como funciona</h2>
+        <ol class="steps">
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">1</span>
+            <h3>Escolha</h3>
+            <p>Monte seu lanche com adicionais e observações, do seu jeito.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">2</span>
+            <h3>Confirme</h3>
+            <p>Diga se é entrega ou retirada e como vai pagar. Nada é cobrado pelo site.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">3</span>
+            <h3>Acompanhe</h3>
+            <p>Veja em tempo real quando o pedido entra em preparo e sai para você.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="sobre" class="container section" aria-labelledby="titulo-sobre">
+        <h2 id="titulo-sobre">Sobre a <span data-store-name>Desu Burguer</span></h2>
+        <p id="about-text" class="about-text">Hambúrguer feito na hora.</p>
+        <div class="info-grid" id="info-grid"></div>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container">
-        <p><span data-store-name>Desu Burguer</span> · Pagamento na entrega ou na retirada.</p>
-        <p id="footer-contact" hidden></p>
+      <div class="container footer-grid">
+        <div>
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">D</span>
+            <span data-store-name>Desu Burguer</span>
+          </a>
+          <p class="muted small">Hambúrguer feito na hora.</p>
+        </div>
+        <div>
+          <h2 class="footer-title">Navegue</h2>
+          <ul class="footer-links">
+            <li><a href="#cardapio">Cardápio</a></li>
+            <li><a href="#como-funciona">Como funciona</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+          </ul>
+        </div>
+        <div id="footer-info">
+          <h2 class="footer-title">Atendimento</h2>
+          <ul class="footer-links" id="footer-contact"></ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p class="muted small">Pagamento na entrega ou na retirada. Imagens com o selo "Imagem ilustrativa" servem só para apresentação.</p>
       </div>
     </footer>
 

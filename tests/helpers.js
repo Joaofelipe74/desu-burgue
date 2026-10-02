@@ -12,12 +12,13 @@ import { createLogger } from '../server/log.js';
 export const ORIGIN = 'http://localhost:4321';
 export const ADMIN = { email: 'dono@desuburguer.test', password: 'uma frase bem longa e secreta 42' };
 
-export async function startServer({ env = {}, overrides = {}, withAdmin = true, port = 0 } = {}) {
+export async function startServer({ env = {}, overrides = {}, withAdmin = true, port = 0, sampleMenu = false } = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'desu-test-'));
   const config = buildConfig({ NODE_ENV: 'test', PORT: '4321', PUBLIC_ORIGIN: ORIGIN, DATA_DIR: dataDir, ...env }, overrides);
   const logs = [];
   const log = createLogger('debug', (line) => logs.push(JSON.parse(line)));
-  const db = openDatabase(path.join(dataDir, 'desu.db'));
+  // sem o cardápio de exemplo: os testes partem só do X-Bacon original
+  const db = openDatabase(path.join(dataDir, 'desu.db'), { sampleMenu });
   if (withAdmin) {
     db.prepare('INSERT INTO admin_users (email, name, password_hash) VALUES (?, ?, ?)').run(
       ADMIN.email,

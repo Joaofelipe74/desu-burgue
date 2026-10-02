@@ -255,7 +255,7 @@ try {
     const img = pg.locator('.product-card img').first();
     await img.waitFor();
     assert.equal(await img.getAttribute('alt'), 'Imagem de teste do X-Bacon');
-    assert.equal(await pg.locator('.illustrative-tag').textContent(), 'Imagem ilustrativa');
+    assert.equal(await pg.locator('.product-card .illustrative-tag').first().textContent(), 'Imagem ilustrativa');
     await pg.waitForFunction(() => document.querySelector('.product-card img').naturalWidth > 0);
     await checkLayout(pg, 'cardápio-com-imagem');
     await pg.screenshot({ path: `${OUT}/cardapio-com-imagem.png` });

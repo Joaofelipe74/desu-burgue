@@ -1,7 +1,7 @@
 // Configurações da loja (aberta/fechada, entrega, retirada, taxa, pagamentos).
 import { DEFAULT_SETTINGS, transaction } from '../db.js';
 import { badRequest } from '../http/errors.js';
-import { boolean, integer, onlyKeys, text } from '../validation.js';
+import { boolean, integer, onlyKeys, phoneBR, text } from '../validation.js';
 
 export const PAYMENT_LABELS = {
   dinheiro: 'Dinheiro',
@@ -33,6 +33,9 @@ export function publicSettings(s) {
       .filter(([, on]) => on)
       .map(([id]) => ({ id, label: PAYMENT_LABELS[id] })),
     contactPhone: s.contact_phone,
+    openingHours: s.opening_hours,
+    aboutText: s.about_text,
+    whatsappUrl: s.whatsapp ? `https://wa.me/55${s.whatsapp}` : '',
   };
 }
 
@@ -53,6 +56,9 @@ export function updateSettings(db, body) {
     next.min_order_cents = integer(body.min_order_cents, { field: 'o pedido mínimo', min: 0, max: 1000000 });
   }
   if ('contact_phone' in body) next.contact_phone = text(body.contact_phone, { field: 'o telefone de contato', max: 30 });
+  if ('opening_hours' in body) next.opening_hours = text(body.opening_hours, { field: 'o horário de funcionamento', max: 120 });
+  if ('about_text' in body) next.about_text = text(body.about_text, { field: 'o texto "Sobre"', max: 400, multiline: true });
+  if ('whatsapp' in body) next.whatsapp = body.whatsapp ? phoneBR(body.whatsapp) : '';
   if ('payment_methods' in body) {
     const pm = onlyKeys(body.payment_methods, Object.keys(PAYMENT_LABELS), 'formas de pagamento');
     next.payment_methods = { ...current.payment_methods };

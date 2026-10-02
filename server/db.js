@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { applySampleMenu } from './sample-menu.js';
 
 const MIGRATIONS = [
   // 1: estrutura inicial
@@ -159,6 +160,11 @@ const MIGRATIONS = [
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
   );
   `,
+  // 2: ilustrações e destaques na página inicial
+  `
+  ALTER TABLE products ADD COLUMN illustration TEXT;
+  ALTER TABLE products ADD COLUMN featured INTEGER NOT NULL DEFAULT 0 CHECK (featured IN (0,1));
+  `,
 ];
 
 export const DEFAULT_SETTINGS = {
@@ -172,9 +178,16 @@ export const DEFAULT_SETTINGS = {
   min_order_cents: 0,
   payment_methods: { dinheiro: true, cartao: true, pix: true },
   contact_phone: '',
+  whatsapp: '',
+  opening_hours: '',
+  about_text: '',
 };
 
-export function openDatabase(file) {
+/**
+ * Abre (ou cria) o banco. `sampleMenu`: aplica uma única vez o cardápio de
+ * exemplo com preços sugeridos (server/sample-menu.js). Os testes desligam.
+ */
+export function openDatabase(file, { sampleMenu = true } = {}) {
   if (file !== ':memory:') fs.mkdirSync(path.dirname(file), { recursive: true });
   const db = new DatabaseSync(file);
   db.exec('PRAGMA foreign_keys = ON;');
@@ -182,6 +195,7 @@ export function openDatabase(file) {
   if (file !== ':memory:') db.exec('PRAGMA journal_mode = WAL;');
   migrate(db);
   seed(db);
+  if (sampleMenu) applySampleMenu(db);
   return db;
 }
 

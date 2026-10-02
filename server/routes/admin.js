@@ -18,6 +18,7 @@ import { parseId } from '../http/router.js';
 import { rateLimit } from '../http/security.js';
 import { maskEmail } from '../log.js';
 import { createCoupon, listCoupons, updateCoupon } from '../services/coupons.js';
+import { illustrationList } from '../services/illustrations.js';
 import { getSharp, removeImageFiles, storeProductImage } from '../services/images.js';
 import * as menu from '../services/menu.js';
 import { getOrderForAdmin, listOrders, updateOrderStatus } from '../services/orders.js';
@@ -187,7 +188,9 @@ export function registerAdminRoutes(router, { limiters, sendJson }) {
 
   // ---------- produtos ----------
 
-  router.get('/api/admin/products', requireAdmin, (ctx) => sendJson(ctx, 200, { products: menu.listProducts(ctx.db) }));
+  router.get('/api/admin/products', requireAdmin, (ctx) =>
+    sendJson(ctx, 200, { products: menu.listProducts(ctx.db), illustrations: illustrationList() })
+  );
 
   router.post('/api/admin/products', requireAdmin, async (ctx) => {
     const id = menu.createProduct(ctx.db, await readJson(ctx.req));

@@ -1,6 +1,13 @@
 # Imagens do Desu Burguer
 
-## Situação atual
+## Atualização (02/10/2026): ilustrações
+
+Cada produto do cardápio de exemplo usa uma **ilustração própria** (desenho em SVG, em `public/img/ilustracoes/`),
+sempre com o selo **"Imagem ilustrativa"**. São 22 desenhos (hambúrgueres, combos, porções, bebidas e sobremesas) e a arte do topo da página.
+No painel, em **Editar produto**, você escolhe a ilustração ou envia uma foto. A foto enviada sempre tem prioridade.
+Para gerar os desenhos de novo: `python scripts/dev/gerar-ilustracoes.py`.
+
+## Situação original
 
 Nenhuma imagem foi encontrada no projeto, nem na pasta `Desu-burguer-estudo`, nem nos arquivos anexados.
 As imagens geradas em outra conversa (ChatGPT) **não ficam acessíveis automaticamente**.

@@ -2,6 +2,9 @@
 rem Inicia o Desu Burguer no Windows com dois cliques.
 title Desu Burguer
 cd /d "%~dp0"
+echo Iniciado em %DATE% %TIME% > iniciar-log.txt
+where node >> iniciar-log.txt 2>&1
+node --version >> iniciar-log.txt 2>&1
 
 where node >nul 2>nul
 if errorlevel 1 (
