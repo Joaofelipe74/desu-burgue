@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de beirute">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="150" ry="13" fill="#000" opacity=".45"/><ellipse cx="200" cy="248" rx="130" ry="24" fill="#efe6d8"/><ellipse cx="200" cy="244" rx="114" ry="17" fill="#fff8ec"/><path d="M70,226 q130,-150 260,0 z" fill="#e6c58f"/><path d="M84,222 q116,-128 232,0" fill="none" stroke="#c99a58" stroke-width="6"/><path d="M96,226 q104,-40 208,0" fill="#efdcb4"/><path d="M100,222 q100,-30 200,0" stroke="#6cc04a" stroke-width="8" fill="none"/><path d="M120,226 q80,-20 160,0" stroke="#e2483d" stroke-width="7" fill="none"/>
+</svg>

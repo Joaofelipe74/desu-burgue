@@ -42,6 +42,8 @@ const ICONS = {
   close: 'M6 6l12 12M18 6 6 18',
   trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3',
   back: 'M15 18l-6-6 6-6',
+  heart: 'M12 20.5s-7.5-4.6-9.6-9.2A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.6 4.9C19.5 15.9 12 20.5 12 20.5Z',
+  search: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm9 3-4.3-4.3',
 };
 
 export function icon(name) {
@@ -191,6 +193,11 @@ export function productImage(product, { sizes = '(max-width: 600px) 100vw, 360px
   wrap.append(el);
   if (img.illustrative) wrap.append(h('span', { class: 'illustrative-tag', text: 'Imagem ilustrativa' }));
   return wrap;
+}
+
+/** Texto das opções escolhidas: "Ao ponto · Brioche · Sem cebola". */
+export function optionsText(options = []) {
+  return options.map((o) => o.name).join(' · ');
 }
 
 /** Converte "24,90" / "24.90" / "24" em centavos (2490). Devolve null se inválido. */

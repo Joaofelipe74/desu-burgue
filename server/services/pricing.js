@@ -1,5 +1,8 @@
 // Cálculo do pedido — feito SEMPRE no servidor, com preços do banco.
 // Valores em centavos (inteiros) para evitar erros de arredondamento.
+import { resolveItemOptions } from './options.js';
+
+const NO_OPTIONS = { groups: new Map(), choices: new Map(), productGroups: new Map() };
 
 export const LIMITS = {
   maxLines: 30, // itens diferentes no carrinho
@@ -37,7 +40,7 @@ export function couponDiscount(coupon, subtotalCents) {
 
 /**
  * Calcula o pedido.
- * @param items   [{ productId, quantity, addonIds, notes }] (já validados quanto ao formato)
+ * @param items   [{ productId, quantity, addonIds, optionIds, notes }] (já validados quanto ao formato)
  * @param catalog { products: Map, addons: Map, links: Map<productId, Set<addonId>> }
  * @param opts    { fulfillment, settings, coupon, couponCode, now }
  * @returns {{ lines, subtotalCents, discountCents, deliveryFeeCents, totalCents, coupon, issues }}
@@ -69,12 +72,15 @@ export function calculateOrder(items, catalog, { fulfillment, settings, coupon =
       }
       addons.push({ id: addon.id, name: addon.name, priceCents: addon.price_cents });
     }
-    const unitPriceCents = product.price_cents + addons.reduce((s, a) => s + a.priceCents, 0);
+    const opt = resolveItemOptions(product, item.optionIds || [], catalog.options || NO_OPTIONS, index);
+    issues.push(...opt.issues);
+    const unitPriceCents = product.price_cents + opt.extraCents + addons.reduce((s, a) => s + a.priceCents, 0);
     lines.push({
       index,
       productId: product.id,
       name: product.name,
       basePriceCents: product.price_cents,
+      options: opt.options,
       addons,
       unitPriceCents,
       quantity: item.quantity,

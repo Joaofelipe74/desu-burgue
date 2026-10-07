@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { applySampleMenu } from './sample-menu.js';
+import { applySampleMenuV2 } from './sample-menu-v2.js';
 
 const MIGRATIONS = [
   // 1: estrutura inicial
@@ -165,6 +166,49 @@ const MIGRATIONS = [
   ALTER TABLE products ADD COLUMN illustration TEXT;
   ALTER TABLE products ADD COLUMN featured INTEGER NOT NULL DEFAULT 0 CHECK (featured IN (0,1));
   `,
+  // 3: preço promocional, selos e grupos de opções (ponto da carne, pão, retirar ingredientes, sabores...)
+  `
+  ALTER TABLE products ADD COLUMN promo_price_cents INTEGER CHECK (promo_price_cents IS NULL OR promo_price_cents >= 0);
+  ALTER TABLE products ADD COLUMN tags TEXT NOT NULL DEFAULT '[]';
+
+  CREATE TABLE option_groups (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE COLLATE NOCASE CHECK (length(name) BETWEEN 1 AND 60),
+    kind TEXT NOT NULL CHECK (kind IN ('single','multi')),
+    required INTEGER NOT NULL DEFAULT 0 CHECK (required IN (0,1)),
+    max_choices INTEGER CHECK (max_choices IS NULL OR max_choices >= 1),
+    archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0,1)),
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+  );
+
+  CREATE TABLE option_choices (
+    id INTEGER PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES option_groups(id) ON DELETE CASCADE,
+    name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 60),
+    price_cents INTEGER NOT NULL DEFAULT 0 CHECK (price_cents >= 0 AND price_cents <= 1000000),
+    available INTEGER NOT NULL DEFAULT 1 CHECK (available IN (0,1)),
+    archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0,1)),
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    UNIQUE (group_id, name)
+  );
+  CREATE INDEX idx_option_choices_group ON option_choices(group_id);
+
+  CREATE TABLE product_option_groups (
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    group_id INTEGER NOT NULL REFERENCES option_groups(id) ON DELETE CASCADE,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (product_id, group_id)
+  );
+
+  CREATE TABLE order_item_options (
+    order_item_id INTEGER NOT NULL REFERENCES order_items(id) ON DELETE CASCADE,
+    group_name TEXT NOT NULL,
+    choice_id INTEGER,
+    choice_name TEXT NOT NULL,
+    price_cents INTEGER NOT NULL
+  );
+  `,
 ];
 
 export const DEFAULT_SETTINGS = {
@@ -195,7 +239,10 @@ export function openDatabase(file, { sampleMenu = true } = {}) {
   if (file !== ':memory:') db.exec('PRAGMA journal_mode = WAL;');
   migrate(db);
   seed(db);
-  if (sampleMenu) applySampleMenu(db);
+  if (sampleMenu) {
+    applySampleMenu(db);
+    applySampleMenuV2(db);
+  }
   return db;
 }
 

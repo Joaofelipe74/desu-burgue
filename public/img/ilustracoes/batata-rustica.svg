@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de batata rústica">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="130" ry="13" fill="#000" opacity=".45"/><path d="M80,180 h240 q-10,70 -60,74 h-120 q-50,-4 -60,-74z" fill="#2f2f2f"/><ellipse cx="200" cy="180" rx="120" ry="16" fill="#3a3a3a"/><path d="M110,190 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M132,182 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M154,174 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M176,190 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M198,182 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M220,174 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M242,190 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M264,182 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M286,174 q14,-34 34,-8 l-10,30 z" fill="#e9b45c" stroke="#9b5d26" stroke-width="5" stroke-linejoin="round"/><path d="M150,150 l30,-14 M170,160 l26,-18 M240,150 l28,-12" stroke="#4f8a3a" stroke-width="3" stroke-linecap="round"/>
+</svg>

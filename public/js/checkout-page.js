@@ -1,7 +1,7 @@
 // Checkout: dados do cliente, entrega/retirada, pagamento, cupom e revisão.
 // Os valores exibidos no resumo vêm do servidor (/api/orders/quote).
 import { cart } from './cart.js';
-import { api, h, money, parseMoneyToCents, uuid } from './lib.js';
+import { api, h, money, optionsText, parseMoneyToCents, uuid } from './lib.js';
 
 const $ = (sel) => document.querySelector(sel);
 const form = $('#checkout-form');
@@ -117,6 +117,7 @@ function renderQuote(q) {
   list.textContent = '';
   for (const l of q.lines) {
     const meta = [
+      l.options?.length ? optionsText(l.options) : null,
       l.addons.length ? `+ ${l.addons.map((a) => a.name).join(', ')}` : null,
       l.notes ? `Obs.: ${l.notes}` : null,
     ].filter(Boolean);

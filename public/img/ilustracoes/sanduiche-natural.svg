@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de sanduíche natural">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="140" ry="13" fill="#000" opacity=".45"/><ellipse cx="200" cy="248" rx="130" ry="24" fill="#efe6d8"/><ellipse cx="200" cy="244" rx="114" ry="17" fill="#fff8ec"/><g transform="translate(200,186) rotate(0) scale(0.95)"><path d="M-90,40 L0,-80 L90,40 z" fill="#7d5530"/><path d="M-76,32 L0,-66 L76,32 z" fill="#b98a58"/><rect x="-94" y="40" width="188" height="10" rx="5.0" fill="#6cc04a"/><rect x="-94" y="48" width="188" height="8" rx="4.0" fill="#f08c2b"/><rect x="-94" y="54" width="188" height="12" rx="6.0" fill="#efdcb4"/><path d="M-90,64 h180 l-8,14 h-164z" fill="#7d5530"/></g>
+</svg>

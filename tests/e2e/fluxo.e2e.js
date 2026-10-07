@@ -111,7 +111,13 @@ try {
   const admin = srv.client();
   await admin.login();
   const addon = await admin.admin('POST', '/api/admin/addons', { name: 'Bacon extra', priceCents: 400, available: true }, { headers: { origin: base } });
-  await admin.admin('PUT', '/api/admin/products/1', { addonIds: [addon.data.id] }, { headers: { origin: base } });
+  const ponto = await admin.admin(
+    'POST',
+    '/api/admin/option-groups',
+    { name: 'Ponto da carne', kind: 'single', required: true, choices: [{ name: 'Ao ponto' }, { name: 'Bem passado' }] },
+    { headers: { origin: base } }
+  );
+  await admin.admin('PUT', '/api/admin/products/1', { addonIds: [addon.data.id], optionGroupIds: [ponto.data.id] }, { headers: { origin: base } });
   await admin.admin('PUT', '/api/admin/settings', { delivery_enabled: true, delivery_fee_cents: 600, pickup_address: 'Rua Exemplo, 100 — Centro', contact_phone: '(11) 4000-0000' }, { headers: { origin: base } });
 
   for (const device of [
@@ -132,10 +138,23 @@ try {
       await page.screenshot({ path: `${OUT}/${L}-1-cardapio.png`, fullPage: true });
     });
 
-    await step(`${L}: personaliza produto (adicional, quantidade, observação)`, async () => {
+    await step(`${L}: busca e filtros do cardápio`, async () => {
+      await page.fill('#menu-search', 'bacon');
+      await page.waitForFunction(() => /1 item encontrado/.test(document.querySelector('#filter-status').textContent));
+      await page.fill('#menu-search', 'nada-disso');
+      await page.getByRole('button', { name: 'Limpar filtros' }).waitFor();
+      await page.getByRole('button', { name: 'Limpar filtros' }).click();
+      await page.getByRole('heading', { name: 'X-Bacon' }).waitFor();
+    });
+
+    await step(`${L}: personaliza produto (opção obrigatória, adicional, quantidade, observação)`, async () => {
       await page.getByRole('button', { name: 'Adicionar X-Bacon ao carrinho' }).click();
       const dlg = page.locator('#product-dialog');
       await dlg.waitFor({ state: 'visible' });
+      // opção obrigatória: sem escolher, o diálogo avisa
+      await page.locator('#pd-submit').click();
+      assert.match(await page.locator('#pd-error').textContent(), /Ponto da carne/);
+      await dlg.getByLabel('Ao ponto').check();
       await dlg.getByLabel('Bacon extra').check();
       await dlg.getByRole('button', { name: 'Aumentar quantidade' }).click();
       await dlg.getByLabel(/Observação/).fill('sem cebola');
@@ -191,6 +210,7 @@ try {
       assert.equal(await page.locator('#status-pill').textContent(), 'Recebido');
       assert.match(await page.locator('#sum-total').textContent(), device.fulfillment === 'entrega' ? /63,80/ : /57,80/);
       assert.match(await page.locator('#items').textContent(), /sem cebola/);
+      assert.match(await page.locator('#items').textContent(), /Ao ponto/);
       await checkLayout(page, `${L}/pedido`);
       await page.screenshot({ path: `${OUT}/${L}-5-pedido.png`, fullPage: true });
       // carrinho esvaziado

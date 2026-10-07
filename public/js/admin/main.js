@@ -3,6 +3,7 @@ import { api, toast } from '../lib.js';
 import { createAddonsTab, createCatalogTab } from './catalog.js';
 import { adminApi, flash, state } from './core.js';
 import { createCouponsTab } from './coupons.js';
+import { createOptionsTab } from './options.js';
 import { createOrdersTab } from './orders.js';
 import { createAccountTab, createSettingsTab } from './settings.js';
 
@@ -38,6 +39,7 @@ function enterApp(session) {
       pedidos: createOrdersTab($('#tab-pedidos')),
       cardapio: createCatalogTab($('#tab-cardapio')),
       adicionais: createAddonsTab($('#tab-adicionais')),
+      opcoes: createOptionsTab($('#tab-opcoes')),
       cupons: createCouponsTab($('#tab-cupons')),
       config: createSettingsTab($('#tab-config')),
       conta: createAccountTab($('#tab-conta')),

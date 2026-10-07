@@ -62,6 +62,23 @@
 
       <section id="cardapio" class="container section" aria-labelledby="titulo-cardapio" tabindex="-1">
         <h2 id="titulo-cardapio">Nosso cardápio</h2>
+        <div class="menu-tools" role="search" aria-label="Buscar e filtrar o cardápio">
+          <div class="search-box">
+            <label for="menu-search" class="visually-hidden">Buscar no cardápio</label>
+            <input id="menu-search" type="search" placeholder="Buscar: bacon, açaí, frango…" autocomplete="off" maxlength="40" />
+          </div>
+          <label class="sort-box">
+            <span class="visually-hidden">Ordenar produtos</span>
+            <select id="menu-sort">
+              <option value="">Ordem do cardápio</option>
+              <option value="asc">Menor preço</option>
+              <option value="desc">Maior preço</option>
+              <option value="name">Nome (A–Z)</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-chips" id="filter-chips" role="group" aria-label="Filtros rápidos"></div>
+        <p id="filter-status" class="muted small" role="status" aria-live="polite"></p>
         <div id="menu-status" class="state" role="status" aria-live="polite">
           <span class="spinner" aria-hidden="true"></span> Carregando cardápio…
         </div>
@@ -133,12 +150,13 @@
         <div class="dialog-body">
           <div id="pd-media"></div>
           <p id="pd-desc" class="product-desc"></p>
+          <div id="pd-options"></div>
           <fieldset id="pd-addons-box" hidden>
             <legend>Adicionais <span class="hint">(opcional)</span></legend>
             <div id="pd-addons"></div>
           </fieldset>
           <div class="field">
-            <label for="pd-notes">Observação <span class="hint">(opcional, ex.: sem cebola)</span></label>
+            <label for="pd-notes">Observação <span class="hint">(opcional, ex.: molho à parte)</span></label>
             <textarea id="pd-notes" maxlength="140" rows="2" aria-describedby="pd-notes-count"></textarea>
             <span id="pd-notes-count" class="hint">0/140</span>
           </div>
@@ -152,6 +170,7 @@
           </div>
         </div>
         <div class="dialog-footer">
+          <p id="pd-error" class="field-error" role="alert"></p>
           <button class="btn btn-primary btn-block" type="submit" id="pd-submit">Adicionar ao carrinho</button>
         </div>
       </form>

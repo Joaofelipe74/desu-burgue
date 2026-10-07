@@ -10,6 +10,8 @@ export function createCatalogTab(panel) {
   let products = [];
   let addons = [];
   let illustrations = [];
+  let tagOptions = [];
+  let groupOptions = [];
   let showArchived = false;
 
   const alert = h('div', { class: 'alert alert-error', role: 'alert' });
@@ -70,6 +72,8 @@ export function createCatalogTab(panel) {
       categories = c.categories;
       products = p.products;
       illustrations = p.illustrations || [];
+      tagOptions = p.tags || [];
+      groupOptions = p.optionGroups || [];
       addons = a.addons;
       renderCategories();
       renderProducts();
@@ -169,7 +173,7 @@ export function createCatalogTab(panel) {
             h('strong', { text: p.name }),
             h('div', {
               class: 'muted small',
-              text: `${p.categoryName} · ${money(p.priceCents)}${p.featured ? ' · destaque' : ''}${p.archived ? ' · arquivado' : ''}${
+              text: `${p.categoryName} · ${money(p.priceCents)}${p.promoPriceCents !== null && p.promoPriceCents !== undefined ? ` (oferta ${money(p.promoPriceCents)})` : ''}${p.featured ? ' · destaque' : ''}${p.archived ? ' · arquivado' : ''}${
                 p.image ? (p.image.kind === 'illustration' ? ' · ilustração' : ' · foto enviada') : ' · sem imagem'
               }`,
             })
@@ -212,6 +216,12 @@ export function createCatalogTab(panel) {
       ),
       description: h('textarea', { maxlength: 300, rows: 3 }),
       price: h('input', { type: 'text', inputmode: 'decimal', placeholder: '24,90', value: p ? centsToInput(p.priceCents) : '' }),
+      promo: h('input', {
+        type: 'text',
+        inputmode: 'decimal',
+        placeholder: 'vazio = sem promoção',
+        value: p && p.promoPriceCents !== null && p.promoPriceCents !== undefined ? centsToInput(p.promoPriceCents) : '',
+      }),
       sortOrder: h('input', { type: 'number', min: 0, max: 9999, value: String(p?.sortOrder ?? 0) }),
       available: checkbox('Disponível para pedidos', p ? p.available : true),
       imageAlt: h('input', { type: 'text', maxlength: 160, value: p?.imageAlt || '' }),
@@ -289,8 +299,33 @@ export function createCatalogTab(panel) {
     peBody.append(
       field('Nome', inputs.name),
       h('div', { class: 'row row-2' }, field('Categoria', inputs.categoryId), field('Preço (R$)', inputs.price)),
+      field('Preço promocional (R$)', inputs.promo, 'opcional; aparece como "Oferta" com o preço antigo riscado'),
       field('Descrição', inputs.description, 'até 300 caracteres'),
       h('div', { class: 'row row-2' }, field('Ordem no cardápio', inputs.sortOrder), h('div', { class: 'field' }, inputs.available.el, inputs.featured.el)),
+      h(
+        'fieldset',
+        {},
+        h('legend', { text: 'Selos' }),
+        h(
+          'div',
+          { class: 'checkbox-grid' },
+          tagOptions.map((t) => checkbox(t.label, p?.tags?.includes(t.key), { value: t.key, name: 'pe-tag' }).el)
+        )
+      ),
+      h(
+        'fieldset',
+        {},
+        h('legend', { text: 'Opções de personalização' }),
+        groupOptions.filter((g) => !g.archived || p?.optionGroupIds.includes(g.id)).length
+          ? h(
+              'div',
+              { class: 'checkbox-grid' },
+              groupOptions
+                .filter((g) => !g.archived || p?.optionGroupIds.includes(g.id))
+                .map((g) => checkbox(g.name, p?.optionGroupIds.includes(g.id), { value: String(g.id), name: 'pe-group' }).el)
+            )
+          : h('p', { class: 'muted small', text: 'Nenhum grupo cadastrado (aba Opções).' })
+      ),
       h(
         'fieldset',
         {},
@@ -327,6 +362,12 @@ export function createCatalogTab(panel) {
       inputs.price.focus();
       return;
     }
+    const promoPriceCents = inputs.promo.value.trim() ? parseMoneyToCents(inputs.promo.value) : null;
+    if (inputs.promo.value.trim() && (promoPriceCents === null || promoPriceCents >= priceCents)) {
+      flash(peAlert, 'Preço promocional inválido: precisa ser menor que o preço normal.');
+      inputs.promo.focus();
+      return;
+    }
     const body = {
       name: inputs.name.value,
       categoryId: Number(inputs.categoryId.value),
@@ -338,6 +379,9 @@ export function createCatalogTab(panel) {
       imageIsIllustrative: !inputs.isReal.input.checked,
       illustration: inputs.illustration.value,
       featured: inputs.featured.input.checked,
+      promoPriceCents,
+      tags: [...peBody.querySelectorAll('input[name="pe-tag"]:checked')].map((i) => i.value),
+      optionGroupIds: [...peBody.querySelectorAll('input[name="pe-group"]:checked')].map((i) => Number(i.value)),
       addonIds: [...peBody.querySelectorAll('input[name="pe-addon"]:checked')].map((i) => Number(i.value)),
     };
     withBusy(

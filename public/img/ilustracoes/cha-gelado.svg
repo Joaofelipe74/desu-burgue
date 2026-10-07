@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de chá gelado">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="70" ry="13" fill="#000" opacity=".45"/><g transform="translate(200,258)"><rect x="12" y="-232" width="9" height="120" rx="4" fill="#ffffff" transform="rotate(14 16 -170)"/><path d="M-56,-180 h112 l-14,176 q-1,4 -5,4 h-74 q-4,0 -5,-4z" fill="#ffffff" opacity=".18"/><path d="M-50,-150 h100 l-11,142 q-1,4 -5,4 h-68 q-4,0 -5,-4z" fill="#d28a2c"/><path d="M-40,-140 l8,124" stroke="#ffffff" stroke-width="6" opacity=".25" stroke-linecap="round"/><rect x="-30" y="-140" width="26" height="22" rx="4" fill="#ffffff" opacity=".55"/><rect x="2" y="-128" width="24" height="20" rx="4" fill="#ffffff" opacity=".5"/><path d="M30,-200 q30,-4 34,22 q-30,10 -34,-22z" fill="#f6a35f"/></g>
+</svg>

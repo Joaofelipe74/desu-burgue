@@ -143,3 +143,30 @@ Feita a pedido do dono ("o site está incompleto"; opção escolhida: exemplo co
   - produto: campos de ilustração e destaque;
   - configurações: horário, texto "Sobre" e WhatsApp (validado e transformado em link `wa.me` pelo servidor).
 - **Testes:** 48 testes automáticos (5 novos sobre o cardápio de exemplo, incluindo cálculo de pedido e validação de ilustração/WhatsApp) e 18 etapas E2E passando. Nenhum erro de console/CSP.
+
+## 9. Atualização de 06/10/2026: mais variedade, personalização e funções
+
+Feita a pedido do dono ("mais diversidade, sem tirar o que já tem"). Nada foi removido.
+
+- **Cardápio:** 63 produtos em 12 categorias. As novas são Smash Burgers, Artesanais Premium, Hot Dogs, Sanduíches, Kids, Açaí e Molhos.
+  - Os itens anteriores continuam iguais (o X-Bacon segue a R$ 24,90).
+  - A ampliação só acrescenta itens e nunca muda o que o dono já editou.
+  - **Os preços continuam sendo sugestões.**
+- **Personalização:**
+  - grupos de opções de escolha única ou múltipla, obrigatórios ou não, com limite e preço extra;
+  - exemplos: ponto da carne, tipo de pão (brioche +R$ 2,00), retirar ingredientes, sabores de bebida, molho dos nuggets, acompanhamentos do açaí (até 4) e sabores do sorvete (até 2);
+  - o servidor confere tudo e soma os valores.
+- **Site do cliente:**
+  - busca sem diferenciar acentos;
+  - filtros rápidos: Ofertas, Mais pedidos (calculado pelos pedidos reais dos últimos 30 dias), Favoritos, Novidades, Vegetarianos, Picantes e Para compartilhar;
+  - ordenação por preço ou nome;
+  - favoritos guardados no navegador;
+  - selos nos produtos e preço promocional com o valor antigo riscado;
+  - edição de itens no carrinho.
+- **Painel:**
+  - nova aba **Opções**, com grupos e escolhas, disponibilidade e arquivamento;
+  - no produto: preço promocional, selos e grupos de opções.
+- **Testes:**
+  - 58 testes automáticos, 10 deles novos: preço das opções, obrigatórias, limite, opção de outro grupo, indisponível, promoção, selos, mais pedidos e ampliação sem duplicar;
+  - 20 etapas E2E, incluindo busca e opção obrigatória, em celular e computador;
+  - nenhum erro de console ou CSP.

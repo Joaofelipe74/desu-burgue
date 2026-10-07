@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de mousse de maracujá">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="80" ry="13" fill="#000" opacity=".45"/><path d="M140,120 h120 l-10,120 q-50,20 -100,0z" fill="#ffffff" opacity=".2"/><path d="M146,130 h108 l-9,106 q-45,16 -90,0z" fill="#f7d36b"/><ellipse cx="200" cy="130" rx="54" ry="10" fill="#f2b632"/><ellipse cx="160" cy="129" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="171" cy="130" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="182" cy="131" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="193" cy="132" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="204" cy="133" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="215" cy="129" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="226" cy="130" rx="4" ry="2.4" fill="#3a2a10"/><ellipse cx="237" cy="131" rx="4" ry="2.4" fill="#3a2a10"/><path d="M200,236 v18 M170,256 h60" stroke="#ffffff" stroke-width="6" opacity=".3" stroke-linecap="round"/>
+</svg>

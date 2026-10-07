@@ -1,7 +1,7 @@
 // Rotas públicas (clientes): cardápio, orçamento, criação e acompanhamento de pedidos.
 import { readJson } from '../http/body.js';
 import { rateLimit } from '../http/security.js';
-import { getPublicMenu } from '../services/menu.js';
+import { getPublicMenu, popularProductIds } from '../services/menu.js';
 import { createOrder, quote, trackOrder } from '../services/orders.js';
 import { getSettings, publicSettings } from '../services/settings.js';
 
@@ -10,7 +10,11 @@ export function registerPublicRoutes(router, { limiters, sendJson }) {
 
   router.get('/api/menu', (ctx) => {
     ctx.res.setHeader('Cache-Control', 'no-cache');
-    sendJson(ctx, 200, { store: publicSettings(getSettings(ctx.db)), categories: getPublicMenu(ctx.db) });
+    sendJson(ctx, 200, {
+      store: publicSettings(getSettings(ctx.db)),
+      categories: getPublicMenu(ctx.db),
+      popularProductIds: popularProductIds(ctx.db),
+    });
   });
 
   router.post('/api/orders/quote', rateLimit(limiters.quote, 'quote'), async (ctx) => {

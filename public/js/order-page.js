@@ -1,6 +1,6 @@
 // Acompanhamento do pedido. O código secreto fica depois do "#" no endereço,
 // então não é enviado em logs de servidor nem para outros sites.
-import { api, formatDateTime, formatTime, h, money, toast } from './lib.js';
+import { api, formatDateTime, formatTime, h, money, optionsText, toast } from './lib.js';
 
 const $ = (sel) => document.querySelector(sel);
 const token = decodeURIComponent(location.hash.slice(1));
@@ -55,7 +55,11 @@ function render(o) {
   const items = $('#items');
   items.textContent = '';
   for (const it of o.items) {
-    const meta = [it.addons.length ? `+ ${it.addons.map((a) => a.name).join(', ')}` : null, it.notes ? `Obs.: ${it.notes}` : null].filter(Boolean);
+    const meta = [
+      it.options?.length ? optionsText(it.options) : null,
+      it.addons.length ? `+ ${it.addons.map((a) => a.name).join(', ')}` : null,
+      it.notes ? `Obs.: ${it.notes}` : null,
+    ].filter(Boolean);
     items.append(h('li', {}, h('span', {}, `${it.quantity}× ${it.name}`, meta.map((m) => h('span', { class: 'meta', text: m }))), h('span', { text: money(it.lineTotalCents) })));
   }
   $('#sum-subtotal').textContent = money(o.subtotalCents);

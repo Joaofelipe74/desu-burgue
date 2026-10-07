@@ -19,6 +19,8 @@ import { rateLimit } from '../http/security.js';
 import { maskEmail } from '../log.js';
 import { createCoupon, listCoupons, updateCoupon } from '../services/coupons.js';
 import { illustrationList } from '../services/illustrations.js';
+import * as options from '../services/options.js';
+import { tagList } from '../services/tags.js';
 import { getSharp, removeImageFiles, storeProductImage } from '../services/images.js';
 import * as menu from '../services/menu.js';
 import { getOrderForAdmin, listOrders, updateOrderStatus } from '../services/orders.js';
@@ -189,7 +191,12 @@ export function registerAdminRoutes(router, { limiters, sendJson }) {
   // ---------- produtos ----------
 
   router.get('/api/admin/products', requireAdmin, (ctx) =>
-    sendJson(ctx, 200, { products: menu.listProducts(ctx.db), illustrations: illustrationList() })
+    sendJson(ctx, 200, {
+      products: menu.listProducts(ctx.db),
+      illustrations: illustrationList(),
+      tags: tagList(),
+      optionGroups: options.listOptionGroups(ctx.db).map((g) => ({ id: g.id, name: g.name, archived: g.archived })),
+    })
   );
 
   router.post('/api/admin/products', requireAdmin, async (ctx) => {
@@ -242,6 +249,37 @@ export function registerAdminRoutes(router, { limiters, sendJson }) {
     const id = parseId(ctx.params.id);
     menu.updateAddon(ctx.db, id, await readJson(ctx.req));
     audit(ctx, 'update', 'addon', id);
+    sendJson(ctx, 200, { ok: true });
+  });
+
+  // ---------- grupos de opções (ponto da carne, pão, retirar ingredientes...) ----------
+
+  router.get('/api/admin/option-groups', requireAdmin, (ctx) => sendJson(ctx, 200, { groups: options.listOptionGroups(ctx.db) }));
+
+  router.post('/api/admin/option-groups', requireAdmin, async (ctx) => {
+    const id = options.createOptionGroup(ctx.db, await readJson(ctx.req));
+    audit(ctx, 'create', 'option_group', id);
+    sendJson(ctx, 201, { id });
+  });
+
+  router.put('/api/admin/option-groups/:id', requireAdmin, async (ctx) => {
+    const id = parseId(ctx.params.id);
+    options.updateOptionGroup(ctx.db, id, await readJson(ctx.req));
+    audit(ctx, 'update', 'option_group', id);
+    sendJson(ctx, 200, { ok: true });
+  });
+
+  router.post('/api/admin/option-groups/:id/choices', requireAdmin, async (ctx) => {
+    const groupId = parseId(ctx.params.id);
+    const id = options.createOptionChoice(ctx.db, groupId, await readJson(ctx.req));
+    audit(ctx, 'create', 'option_choice', id, { groupId });
+    sendJson(ctx, 201, { id });
+  });
+
+  router.put('/api/admin/option-choices/:id', requireAdmin, async (ctx) => {
+    const id = parseId(ctx.params.id);
+    options.updateOptionChoice(ctx.db, id, await readJson(ctx.req));
+    audit(ctx, 'update', 'option_choice', id);
     sendJson(ctx, 200, { ok: true });
   });
 

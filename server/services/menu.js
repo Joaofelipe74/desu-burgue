@@ -3,8 +3,17 @@ import { nowIso, transaction } from '../db.js';
 import { badRequest, conflict, notFound } from '../http/errors.js';
 import { boolean, idList, integer, oneOf, onlyKeys, text } from '../validation.js';
 import { ILLUSTRATIONS } from './illustrations.js';
+import { loadOptionCatalog, parseGroupIds, publicGroupsFor, setProductOptionGroups } from './options.js';
+import { parseTags, TAGS } from './tags.js';
 
 const bool = (v) => v === 1;
+
+/** Preço cobrado: o promocional, se houver e for menor que o normal. */
+export function effectivePrice(p) {
+  return p.promo_price_cents !== null && p.promo_price_cents !== undefined && p.promo_price_cents < p.price_cents
+    ? p.promo_price_cents
+    : p.price_cents;
+}
 
 /** Foto enviada pelo painel; se não houver, a ilustração escolhida; senão null (aviso "Foto em breve"). */
 function imageInfo(p) {
@@ -58,6 +67,7 @@ export function getPublicMenu(db) {
     db.prepare('SELECT id, name, price_cents, available FROM addons WHERE archived = 0').all().map((a) => [a.id, a])
   );
   const links = addonLinks(db);
+  const optionCat = loadOptionCatalog(db);
 
   return categories
     .map((c) => ({
@@ -69,10 +79,13 @@ export function getPublicMenu(db) {
           id: p.id,
           name: p.name,
           description: p.description,
-          priceCents: p.price_cents,
+          priceCents: effectivePrice(p),
+          originalPriceCents: effectivePrice(p) < p.price_cents ? p.price_cents : null,
           available: bool(p.available),
           featured: bool(p.featured),
+          tags: parseTags(p.tags),
           image: imageInfo(p),
+          optionGroups: publicGroupsFor(p.id, optionCat),
           addons: [...(links.get(p.id) || [])]
             .map((id) => addons.get(id))
             .filter(Boolean)
@@ -88,11 +101,20 @@ export function loadCatalog(db) {
   const products = new Map(
     db
       .prepare(
-        `SELECT p.id, p.name, p.price_cents, p.available, p.archived, c.active AS category_active
+        `SELECT p.id, p.name, p.price_cents, p.promo_price_cents, p.available, p.archived, c.active AS category_active
            FROM products p JOIN categories c ON c.id = p.category_id`
       )
       .all()
-      .map((p) => [p.id, { ...p, available: bool(p.available), archived: bool(p.archived), category_active: bool(p.category_active) }])
+      .map((p) => [
+        p.id,
+        {
+          ...p,
+          price_cents: effectivePrice(p),
+          available: bool(p.available),
+          archived: bool(p.archived),
+          category_active: bool(p.category_active),
+        },
+      ])
   );
   const addons = new Map(
     db
@@ -100,7 +122,25 @@ export function loadCatalog(db) {
       .all()
       .map((a) => [a.id, { ...a, available: bool(a.available), archived: bool(a.archived) }])
   );
-  return { products, addons, links: addonLinks(db) };
+  return { products, addons, links: addonLinks(db), options: loadOptionCatalog(db) };
+}
+
+/**
+ * "Mais pedidos": produtos mais vendidos nos últimos 30 dias (pedidos não cancelados).
+ * Devolve só a ordem dos IDs, sem quantidades.
+ */
+export function popularProductIds(db, limit = 6) {
+  const since = new Date(Date.now() - 30 * 86400 * 1000).toISOString();
+  return db
+    .prepare(
+      `SELECT oi.product_id AS id, SUM(oi.quantity) AS q
+         FROM order_items oi JOIN orders o ON o.id = oi.order_id
+         JOIN products p ON p.id = oi.product_id
+        WHERE o.status <> 'cancelado' AND o.created_at >= ? AND p.archived = 0
+        GROUP BY oi.product_id ORDER BY q DESC, oi.product_id LIMIT ?`
+    )
+    .all(since, limit)
+    .map((r) => r.id);
 }
 
 // ---------- Administração: categorias ----------
@@ -168,6 +208,7 @@ export function deleteCategory(db, id) {
 
 export function listProducts(db) {
   const links = addonLinks(db);
+  const optionCat = loadOptionCatalog(db);
   return db
     .prepare(
       `SELECT p.*, c.name AS category_name FROM products p JOIN categories c ON c.id = p.category_id
@@ -189,14 +230,20 @@ export function listProducts(db) {
       imageIsIllustrative: bool(p.image_is_illustrative),
       illustration: p.illustration || '',
       featured: bool(p.featured),
+      promoPriceCents: p.promo_price_cents,
+      tags: parseTags(p.tags),
       addonIds: [...(links.get(p.id) || [])],
+      optionGroupIds: optionCat.productGroups.get(p.id) || [],
     }));
 }
 
 function productInput(db, body, partial) {
   onlyKeys(
     body,
-    ['categoryId', 'name', 'description', 'priceCents', 'available', 'archived', 'sortOrder', 'imageAlt', 'imageIsIllustrative', 'addonIds', 'illustration', 'featured'],
+    [
+      'categoryId', 'name', 'description', 'priceCents', 'available', 'archived', 'sortOrder', 'imageAlt',
+      'imageIsIllustrative', 'addonIds', 'illustration', 'featured', 'promoPriceCents', 'tags', 'optionGroupIds',
+    ],
     'produto'
   );
   const out = {};
@@ -219,6 +266,17 @@ function productInput(db, body, partial) {
     out.illustration = ill === '' ? null : oneOf(ill, Object.keys(ILLUSTRATIONS), { field: 'a ilustração' });
   }
   if (!partial || 'featured' in body) out.featured = boolean(body.featured ?? false, { field: 'destaque' }) ? 1 : 0;
+  if (!partial || 'promoPriceCents' in body) {
+    out.promo_price_cents = integer(body.promoPriceCents, { field: 'o preço promocional', min: 0, max: 100000000, required: false });
+  }
+  if (!partial || 'tags' in body) {
+    const tags = body.tags ?? [];
+    if (!Array.isArray(tags) || tags.length > 10) throw badRequest('Selos inválidos.');
+    const clean = [...new Set(tags.map((t) => oneOf(t, Object.keys(TAGS), { field: 'o selo' })))];
+    out.tags = JSON.stringify(clean);
+  }
+  let optionGroupIds;
+  if (!partial || 'optionGroupIds' in body) optionGroupIds = parseGroupIds(db, body.optionGroupIds);
   let addonIds;
   if (!partial || 'addonIds' in body) {
     addonIds = idList(body.addonIds, { field: 'os adicionais', max: 50 });
@@ -226,7 +284,17 @@ function productInput(db, body, partial) {
       if (!db.prepare('SELECT id FROM addons WHERE id = ?').get(id)) throw badRequest('Adicional inexistente.');
     }
   }
-  return { fields: out, addonIds };
+  return { fields: out, addonIds, optionGroupIds };
+}
+
+/** O preço promocional precisa ser menor que o preço normal. */
+function checkPromo(db, id, fields) {
+  const current = id ? db.prepare('SELECT price_cents, promo_price_cents FROM products WHERE id = ?').get(id) : {};
+  const price = fields.price_cents ?? current?.price_cents;
+  const promo = 'promo_price_cents' in fields ? fields.promo_price_cents : current?.promo_price_cents;
+  if (promo !== null && promo !== undefined && promo >= price) {
+    throw badRequest('O preço promocional precisa ser menor que o preço normal.');
+  }
 }
 
 function setProductAddons(db, productId, addonIds) {
@@ -237,7 +305,8 @@ function setProductAddons(db, productId, addonIds) {
 }
 
 export function createProduct(db, body) {
-  const { fields, addonIds } = productInput(db, body, false);
+  const { fields, addonIds, optionGroupIds } = productInput(db, body, false);
+  checkPromo(db, null, fields);
   return transaction(db, () => {
     const cols = Object.keys(fields);
     const r = db
@@ -245,17 +314,20 @@ export function createProduct(db, body) {
       .run(fields);
     const id = Number(r.lastInsertRowid);
     setProductAddons(db, id, addonIds);
+    setProductOptionGroups(db, id, optionGroupIds);
     return id;
   });
 }
 
 export function updateProduct(db, id, body) {
-  const { fields, addonIds } = productInput(db, body, true);
+  const { fields, addonIds, optionGroupIds } = productInput(db, body, true);
   transaction(db, () => {
     if (!db.prepare('SELECT id FROM products WHERE id = ?').get(id)) throw notFound('Produto não encontrado.');
+    checkPromo(db, id, fields);
     const sets = Object.keys(fields).map((k) => `${k} = :${k}`);
     db.prepare(`UPDATE products SET ${[...sets, 'updated_at = :now'].join(', ')} WHERE id = :id`).run({ ...fields, now: nowIso(), id });
     setProductAddons(db, id, addonIds);
+    setProductOptionGroups(db, id, optionGroupIds);
   });
 }
 

@@ -129,6 +129,7 @@ export function createOrdersTab(panel) {
             'li',
             {},
             `${it.quantity}× ${it.name}`,
+            it.options?.length ? h('div', { class: 'order-options', text: it.options.map((o) => o.name).join(' · ') }) : null,
             it.addons.length ? h('span', { class: 'muted', text: ` + ${it.addons.map((a) => a.name).join(', ')}` }) : null,
             it.notes ? h('div', { class: 'muted', text: `Obs.: ${it.notes}` }) : null
           )

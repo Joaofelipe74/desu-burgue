@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Ilustração de misto quente">
+<!-- Ilustração original Desu Burguer — não é foto do produto. -->
+<defs>
+  <radialGradient id="glow" cx="50%" cy="55%" r="55%">
+    <stop offset="0" stop-color="#ffb703" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#ffb703" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="400" height="300" fill="#1d1d1d"/><rect width="400" height="300" fill="url(#glow)"/>
+<ellipse cx="200" cy="262" rx="140" ry="13" fill="#000" opacity=".45"/><ellipse cx="200" cy="248" rx="130" ry="24" fill="#efe6d8"/><ellipse cx="200" cy="244" rx="114" ry="17" fill="#fff8ec"/><g transform="translate(168,190) rotate(-6) scale(0.85)"><path d="M-90,40 L0,-80 L90,40 z" fill="#b9783a"/><path d="M-76,32 L0,-66 L76,32 z" fill="#e7b56a"/><rect x="-94" y="40" width="188" height="10" rx="5.0" fill="#f6c453"/><rect x="-94" y="48" width="188" height="10" rx="5.0" fill="#e99a9a"/><path d="M-90,56 h180 l-8,14 h-164z" fill="#b9783a"/></g><g transform="translate(250,196) rotate(8) scale(0.8)"><path d="M-90,40 L0,-80 L90,40 z" fill="#b9783a"/><path d="M-76,32 L0,-66 L76,32 z" fill="#e7b56a"/><rect x="-94" y="40" width="188" height="10" rx="5.0" fill="#f6c453"/><rect x="-94" y="48" width="188" height="10" rx="5.0" fill="#e99a9a"/><path d="M-90,56 h180 l-8,14 h-164z" fill="#b9783a"/></g>
+</svg>

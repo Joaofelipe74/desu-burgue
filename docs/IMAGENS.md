@@ -3,7 +3,7 @@
 ## Atualização (02/10/2026): ilustrações
 
 Cada produto do cardápio de exemplo usa uma **ilustração própria** (desenho em SVG, em `public/img/ilustracoes/`),
-sempre com o selo **"Imagem ilustrativa"**. São 22 desenhos (hambúrgueres, combos, porções, bebidas e sobremesas) e a arte do topo da página.
+sempre com o selo **"Imagem ilustrativa"**. São 59 desenhos (hambúrgueres, smash, premium, hot dogs, sanduíches, porções, kids, molhos, bebidas, açaí e sobremesas) e a arte do topo da página.
 No painel, em **Editar produto**, você escolhe a ilustração ou envia uma foto. A foto enviada sempre tem prioridade.
 Para gerar os desenhos de novo: `python scripts/dev/gerar-ilustracoes.py`.
 

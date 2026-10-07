@@ -44,11 +44,12 @@ function parseItems(items) {
   if (!Array.isArray(items) || items.length === 0) throw badRequest('Seu carrinho está vazio.');
   if (items.length > LIMITS.maxLines) throw badRequest(`O pedido pode ter no máximo ${LIMITS.maxLines} itens diferentes.`);
   const parsed = items.map((it, i) => {
-    onlyKeys(it, ['productId', 'quantity', 'addonIds', 'notes'], `item ${i + 1}`);
+    onlyKeys(it, ['productId', 'quantity', 'addonIds', 'optionIds', 'notes'], `item ${i + 1}`);
     return {
       productId: integer(it.productId, { field: 'o produto', min: 1, max: 2 ** 31 }),
       quantity: integer(it.quantity, { field: 'a quantidade', min: 1, max: LIMITS.maxQuantityPerLine }),
       addonIds: idList(it.addonIds, { field: 'os adicionais', max: 20 }).sort((a, b) => a - b),
+      optionIds: idList(it.optionIds, { field: 'as opções', max: 30 }).sort((a, b) => a - b),
       notes: text(it.notes, { field: 'a observação do item', max: LIMITS.maxItemNotes }),
     };
   });
@@ -73,6 +74,7 @@ function quoteResponse(result) {
       index: l.index,
       productId: l.productId,
       name: l.name,
+      options: l.options,
       addons: l.addons,
       unitPriceCents: l.unitPriceCents,
       quantity: l.quantity,
@@ -219,9 +221,14 @@ export function createOrder(db, body, { log = null } = {}) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     );
     const insAddon = db.prepare('INSERT INTO order_item_addons (order_item_id, addon_id, addon_name, price_cents) VALUES (?, ?, ?, ?)');
+    const insOption = db.prepare(
+      'INSERT INTO order_item_options (order_item_id, group_name, choice_id, choice_name, price_cents) VALUES (?, ?, ?, ?, ?)'
+    );
     for (const l of result.lines) {
       const it = insItem.run(orderId, l.productId, l.name, l.basePriceCents, l.unitPriceCents, l.quantity, l.lineTotalCents, l.notes);
-      for (const a of l.addons) insAddon.run(Number(it.lastInsertRowid), a.id, a.name, a.priceCents);
+      const itemId = Number(it.lastInsertRowid);
+      for (const o of l.options) insOption.run(itemId, o.groupName, o.choiceId, o.name, o.priceCents);
+      for (const a of l.addons) insAddon.run(itemId, a.id, a.name, a.priceCents);
     }
     db.prepare('INSERT INTO order_status_history (order_id, from_status, to_status, created_at) VALUES (?, NULL, ?, ?)').run(
       orderId,
@@ -241,12 +248,14 @@ function publicCreated(o) {
 function loadItems(db, orderId) {
   const items = db.prepare('SELECT * FROM order_items WHERE order_id = ? ORDER BY id').all(orderId);
   const addons = db.prepare('SELECT addon_name, price_cents FROM order_item_addons WHERE order_item_id = ?');
+  const options = db.prepare('SELECT group_name, choice_name, price_cents FROM order_item_options WHERE order_item_id = ? ORDER BY rowid');
   return items.map((it) => ({
     name: it.product_name,
     quantity: it.quantity,
     unitPriceCents: it.unit_price_cents,
     lineTotalCents: it.line_total_cents,
     notes: it.notes,
+    options: options.all(it.id).map((o) => ({ groupName: o.group_name, name: o.choice_name, priceCents: o.price_cents })),
     addons: addons.all(it.id).map((a) => ({ name: a.addon_name, priceCents: a.price_cents })),
   }));
 }

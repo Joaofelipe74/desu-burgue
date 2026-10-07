@@ -3,14 +3,23 @@
 Sistema de pedidos da hamburgueria **Desu Burguer**: cardápio online, personalização de lanches,
 carrinho, finalização com entrega ou retirada, acompanhamento do pedido e painel administrativo.
 
-- **Cliente:** escolhe produtos e adicionais, ajusta quantidades e informa entrega/retirada e forma de pagamento. Depois acompanha o pedido por um link.
-- **Loja (painel `/admin/`):** recebe e atualiza pedidos e cuida de categorias, produtos, fotos, disponibilidade, adicionais, cupons, taxa de entrega e horário aberto/fechado.
+- **Cliente:**
+  - busca no cardápio e usa filtros (ofertas, mais pedidos, favoritos, novidades, vegetarianos, picantes, para compartilhar);
+  - ordena por preço e guarda favoritos;
+  - personaliza o pedido (ponto da carne, tipo de pão, retirar ingredientes, sabores e adicionais);
+  - edita itens no carrinho e informa entrega/retirada e forma de pagamento;
+  - depois acompanha o pedido por um link.
+- **Loja (painel `/admin/`):** recebe e atualiza pedidos e cuida de:
+  - categorias, produtos, fotos, preço promocional, selos e disponibilidade;
+  - adicionais e **grupos de opções**;
+  - cupons, taxa de entrega e horário aberto/fechado.
 - **Pagamento:** feito **na entrega ou na retirada** (dinheiro, cartão na maquininha ou Pix). O site **não cobra nada online**.
 
 > A versão original (2 arquivos) está preservada em `_backup-original/` e também no primeiro commit do Git.
 
 > **Cardápio de exemplo:** na primeira vez que o sistema abre, ele cadastra um cardápio de exemplo
-> (24 itens em 5 categorias, adicionais, destaques, taxa de entrega de R$ 6,00 e horário "Terça a domingo, das 18h às 23h").
+> (63 itens em 12 categorias: hambúrgueres, smash, premium, combos, hot dogs, sanduíches, porções, kids, bebidas, açaí,
+> sobremesas e molhos; mais adicionais, opções de personalização, ofertas, destaques, taxa de entrega de R$ 6,00 e horário).
 > Os **preços são sugestões**: revise tudo no painel (`/admin/` → Cardápio, Adicionais e Configurações) antes de atender clientes reais.
 > O X-Bacon original mantém o preço de R$ 24,90. Os produtos usam **ilustrações próprias** (desenhos) com o selo
 > "Imagem ilustrativa" até você enviar as fotos.
@@ -78,7 +87,7 @@ Para parar, pressione `Ctrl + C` no terminal.
 | `npm start` | Inicia o sistema |
 | `npm run dev` | Inicia e reinicia sozinho quando o código do servidor muda |
 | `npm run create-admin` | Cria um administrador (`-- --reset` redefine a senha de um existente) |
-| `npm test` | Roda os testes automáticos (43 testes) |
+| `npm test` | Roda os testes automáticos (58 testes) |
 | `npm run test:e2e` | Teste no navegador, em tamanho de celular e de computador (precisa do Playwright, veja abaixo) |
 | `npm run check` | Confere a sintaxe de todos os arquivos e roda os testes |
 | `npm run import-image -- --produto 1 --arquivo foto.png` | Associa uma imagem a um produto |

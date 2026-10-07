@@ -18,9 +18,11 @@ describe('cardápio de exemplo', () => {
   it('cria categorias, produtos e adicionais com ilustração e selo ilustrativo', async () => {
     const r = await srv.client().get('/api/menu');
     const cats = r.data.categories.map((c) => c.name);
-    assert.deepEqual(cats, ['Hambúrgueres', 'Combos', 'Porções', 'Bebidas', 'Sobremesas']);
+    // v1 (5 categorias) + ampliação v2 (7 categorias novas)
+    for (const c of ['Hambúrgueres', 'Combos', 'Porções', 'Bebidas', 'Sobremesas']) assert.ok(cats.includes(c), c);
+    assert.equal(cats.length, 12);
     const all = r.data.categories.flatMap((c) => c.products);
-    assert.equal(all.length, 24);
+    assert.equal(all.length, 63);
     for (const p of all) {
       assert.ok(p.image, `${p.name} tem ilustração`);
       assert.equal(p.image.kind, 'illustration');
@@ -56,9 +58,10 @@ describe('cardápio de exemplo', () => {
     const smash = byName.get('Desu Smash Duplo');
     const bacon = smash.addons.find((a) => a.name === 'Bacon extra');
     const refri = byName.get('Refrigerante lata');
+    const guarana = refri.optionGroups.find((g) => g.name === 'Sabor do refrigerante').choices.find((c) => c.name === 'Guaraná');
     const items = [
       { productId: smash.id, quantity: 1, addonIds: [bacon.id], notes: '' },
-      { productId: refri.id, quantity: 2, addonIds: [], notes: 'guaraná' },
+      { productId: refri.id, quantity: 2, addonIds: [], optionIds: [guarana.id], notes: '' },
     ];
     const expected = 2990 + 400 + 650 * 2 + 600;
     const r = await srv.client().post('/api/orders', orderBody({
