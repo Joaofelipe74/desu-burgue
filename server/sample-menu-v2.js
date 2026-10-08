@@ -74,7 +74,7 @@ const NEW_PRODUCTS = [
   ['Artesanais Premium', 'Cheddar Onion Crispy', 'Pão brioche, blend de 180 g, cheddar, cebola crispy e maionese defumada.', 3490, null, 'premium-onion', [], BEEF, BURGER_ADDONS],
   ['Artesanais Premium', 'BBQ Defumado', 'Pão australiano, blend de 180 g, bacon defumado, picles e barbecue.', 3590, null, 'premium-bbq', ['picante'], BEEF, BURGER_ADDONS],
 
-  ['Combos', 'Combo Casal', '2 X-Bacon + batata frita grande + refrigerante 2 L.', 7490, 6990, 'combo-familia', ['compartilhar'], ['Sabor do refrigerante', 'Retirar ingredientes'], []],
+  ['Combos', 'Combo Casal', '2 X-Bacon + batata frita grande + refrigerante 2 L.', 7490, 6990, 'combo-casal', ['compartilhar'], ['Sabor do refrigerante', 'Retirar ingredientes'], []],
   ['Combos', 'Combo Smash Bacon', 'Smash Bacon + batata frita pequena + refrigerante lata.', 3490, null, 'combo', [], ['Sabor do refrigerante', 'Retirar ingredientes'], []],
 
   ['Hot Dogs', 'Hot Dog Tradicional', 'Pão, salsicha, molho de tomate, milho e batata palha.', 1290, null, 'hotdog', [], REMOVE, DOG_ADDONS],
@@ -232,6 +232,25 @@ export function applySampleMenuV2(db) {
     }
 
     db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run(SAMPLE_FLAG_V2, 'true');
+  });
+  return true;
+}
+
+export const SAMPLE_FLAG_V3 = '_cardapio_exemplo_v3';
+
+/**
+ * Ajuste das ilustrações (07/10/2026): o Combo Casal ganhou desenho próprio
+ * (2 lanches) em vez de reaproveitar o do Combo Família (4 lanches).
+ * Só troca se o produto ainda estiver com a ilustração que o exemplo colocou.
+ */
+export function applySampleMenuV3(db) {
+  if (!db.prepare('SELECT 1 FROM settings WHERE key = ?').get(SAMPLE_FLAG_V2)) return false;
+  if (db.prepare('SELECT 1 FROM settings WHERE key = ?').get(SAMPLE_FLAG_V3)) return false;
+  transaction(db, () => {
+    db.prepare(
+      "UPDATE products SET illustration = 'combo-casal' WHERE name = 'Combo Casal' COLLATE NOCASE AND illustration = 'combo-familia'"
+    ).run();
+    db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run(SAMPLE_FLAG_V3, 'true');
   });
   return true;
 }

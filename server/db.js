@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { applySampleMenu } from './sample-menu.js';
-import { applySampleMenuV2 } from './sample-menu-v2.js';
+import { applySampleMenuV2, applySampleMenuV3 } from './sample-menu-v2.js';
 
 const MIGRATIONS = [
   // 1: estrutura inicial
@@ -242,6 +242,7 @@ export function openDatabase(file, { sampleMenu = true } = {}) {
   if (sampleMenu) {
     applySampleMenu(db);
     applySampleMenuV2(db);
+    applySampleMenuV3(db);
   }
   return db;
 }

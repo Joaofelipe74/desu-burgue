@@ -170,3 +170,25 @@ Feita a pedido do dono ("mais diversidade, sem tirar o que já tem"). Nada foi r
   - 58 testes automáticos, 10 deles novos: preço das opções, obrigatórias, limite, opção de outro grupo, indisponível, promoção, selos, mais pedidos e ampliação sem duplicar;
   - 20 etapas E2E, incluindo busca e opção obrigatória, em celular e computador;
   - nenhum erro de console ou CSP.
+
+## 10. Atualização de 07/10/2026: ilustrações redesenhadas
+
+Feita a pedido do dono ("dá pra melhorar as imagens do cardápio").
+
+- **Sem gerador de imagens por IA:** esta sessão não tinha nenhum conectado. Procurei nos conectores disponíveis e não há um.
+  Por isso, os desenhos foram refeitos em código (SVG). Continuam sendo **ilustrações** e aparecem com o selo "Imagem ilustrativa".
+- **Desenhos:** todos os 60 foram refeitos e a arte do topo também, num estilo único com volume, sombras, brilho e textura leve.
+  - O trabalho foi dividido entre agentes de ilustração por grupo (lanches, acompanhamentos, bebidas, especiais, sobremesas e combos).
+  - Cada grupo foi revisado visualmente em tamanho grande e em tamanho de cartão.
+- **Combo Casal:** ganhou desenho próprio, com 2 lanches. Antes usava o do Combo Família, que tem 4.
+  - Em bancos que já existiam, a troca só acontece se o produto ainda estiver com o desenho original do exemplo.
+- **Desempenho:** o servidor passou a enviar HTML, CSS, JS e SVG compactados com gzip quando o navegador aceita.
+  As ilustrações somam cerca de 1,7 MB sem compactar e cerca de 400 KB compactadas.
+- **Visual:** o fundo atrás das imagens no cartão e na janela do produto passou para o mesmo tom escuro das ilustrações.
+- **Testes:**
+  - 60 testes automáticos; os 2 novos cobrem a compactação gzip e a troca do Combo Casal;
+  - as 20 etapas E2E continuam passando;
+  - a página com o cardápio de exemplo completo não teve erro de console nem imagem quebrada;
+  - no celular, nenhum conteúdo passou da largura da tela.
+- **Limitação:** alguns detalhes das descrições não aparecem no desenho. O exemplo mais visível é o presunto do X-Tudo.
+  Como são imagens ilustrativas, o texto do produto é o que vale. Fotos reais podem ser enviadas pelo painel a qualquer momento.

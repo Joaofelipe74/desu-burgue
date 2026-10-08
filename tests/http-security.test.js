@@ -99,6 +99,32 @@ describe('segurança HTTP', () => {
     assert.equal(r.headers.get('location'), '/admin/');
   });
 
+  it('compacta arquivos de texto (gzip) só quando o navegador aceita', async () => {
+    const url = '/img/ilustracoes/hamburguer.svg';
+    const file = path.join(import.meta.dirname, '..', 'public', url);
+    const size = fs.statSync(file).size;
+    const c = srv.client();
+
+    const gz = await c.get(url, { headers: { 'accept-encoding': 'gzip' } });
+    assert.equal(gz.status, 200);
+    assert.equal(gz.headers.get('content-encoding'), 'gzip');
+    assert.match(gz.headers.get('vary') || '', /Accept-Encoding/i);
+    assert.ok(Number(gz.headers.get('content-length')) < size / 2, 'versão compactada deve ser bem menor');
+    assert.match(gz.data, /^<svg /);
+    assert.match(gz.headers.get('etag'), /-gz"$/);
+
+    const again = await c.get(url, { headers: { 'accept-encoding': 'gzip', 'if-none-match': gz.headers.get('etag') } });
+    assert.equal(again.status, 304);
+
+    for (const ae of ['identity', 'gzip;q=0']) {
+      const plain = await c.get(url, { headers: { 'accept-encoding': ae } });
+      assert.equal(plain.headers.get('content-encoding'), null, ae);
+      assert.equal(Number(plain.headers.get('content-length')), size, ae);
+    }
+    const partial = await c.get(url, { headers: { 'accept-encoding': 'br;q=1, gzip;q=0.5' } });
+    assert.equal(partial.headers.get('content-encoding'), 'gzip');
+  });
+
   it('API exige JSON, limita tamanho e trata JSON malformado', async () => {
     const c = srv.client();
     const wrongType = await c.request('POST', '/api/orders/quote', { raw: '{}', contentType: 'text/plain' });

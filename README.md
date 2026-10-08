@@ -87,7 +87,7 @@ Para parar, pressione `Ctrl + C` no terminal.
 | `npm start` | Inicia o sistema |
 | `npm run dev` | Inicia e reinicia sozinho quando o código do servidor muda |
 | `npm run create-admin` | Cria um administrador (`-- --reset` redefine a senha de um existente) |
-| `npm test` | Roda os testes automáticos (58 testes) |
+| `npm test` | Roda os testes automáticos (60 testes) |
 | `npm run test:e2e` | Teste no navegador, em tamanho de celular e de computador (precisa do Playwright, veja abaixo) |
 | `npm run check` | Confere a sintaxe de todos os arquivos e roda os testes |
 | `npm run import-image -- --produto 1 --arquivo foto.png` | Associa uma imagem a um produto |

@@ -1,11 +1,31 @@
 # Imagens do Desu Burguer
 
-## Atualização (02/10/2026): ilustrações
+## Atualização (07/10/2026): ilustrações redesenhadas
 
 Cada produto do cardápio de exemplo usa uma **ilustração própria** (desenho em SVG, em `public/img/ilustracoes/`),
-sempre com o selo **"Imagem ilustrativa"**. São 59 desenhos (hambúrgueres, smash, premium, hot dogs, sanduíches, porções, kids, molhos, bebidas, açaí e sobremesas) e a arte do topo da página.
+sempre com o selo **"Imagem ilustrativa"**. São 60 desenhos de produtos e a arte do topo da página.
+
+- **Estilo:** os desenhos têm volume (degradês), sombras suaves, brilho, textura leve e fundo escuro de estúdio.
+  O estilo é o mesmo em todo o cardápio.
+- **Combos:** combos e kids mostram os itens que a descrição promete. O Combo Casal ganhou desenho próprio, com 2 lanches.
+- **Embalagens:** usam só a identidade da casa (selo "D", amarelo e preto, papel kraft). Não imitam nenhuma marca real.
+- **Tamanho:** os arquivos têm entre 5 e 55 KB. O servidor envia compactado (gzip), então cada um chega ao navegador
+  com cerca de 3 a 13 KB.
+- **Não são fotos:** não foram geradas por IA (esta sessão não tinha gerador de imagens conectado). São desenhos
+  vetoriais escritos em código e não representam o produto real servido.
+
 No painel, em **Editar produto**, você escolhe a ilustração ou envia uma foto. A foto enviada sempre tem prioridade.
-Para gerar os desenhos de novo: `python scripts/dev/gerar-ilustracoes.py`.
+
+Para gerar os desenhos de novo (precisa de Python 3, sem bibliotecas extras):
+
+```bash
+python scripts/dev/gerar-ilustracoes.py
+```
+
+O gerador junta os módulos de `scripts/dev/ilustracoes/` (`estilo.py` é a base visual comum; `lanches.py`,
+`acompanhamentos.py`, `bebidas.py`, `especiais.py`, `sobremesas.py` e `combos.py` são os desenhos). Antes de gravar,
+ele confere se a lista bate com `server/services/illustrations.js`, se cada SVG é válido e se não há nada que a
+política de segurança (CSP) bloquearia, como `<script>`, `<style>` ou imagens externas.
 
 ## Situação original
 

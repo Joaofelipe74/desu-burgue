@@ -5,6 +5,7 @@ import path from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import { ROOT_DIR } from '../server/config.js';
 import { applySampleMenu } from '../server/sample-menu.js';
+import { SAMPLE_FLAG_V3, applySampleMenuV3 } from '../server/sample-menu-v2.js';
 import { ILLUSTRATIONS } from '../server/services/illustrations.js';
 import { orderBody, startServer } from './helpers.js';
 
@@ -44,6 +45,24 @@ describe('cardápio de exemplo', () => {
     const before = srv.db.prepare('SELECT COUNT(*) n FROM products').get().n;
     assert.equal(applySampleMenu(srv.db), false);
     assert.equal(srv.db.prepare('SELECT COUNT(*) n FROM products').get().n, before);
+  });
+
+  it('Combo Casal usa o desenho de 2 lanches; banco antigo é ajustado só se o dono não mudou', () => {
+    const get = () => srv.db.prepare("SELECT illustration FROM products WHERE name = 'Combo Casal'").get().illustration;
+    assert.equal(get(), 'combo-casal');
+    // simula um banco criado antes do ajuste
+    const reset = (ill) => {
+      srv.db.prepare("UPDATE products SET illustration = ? WHERE name = 'Combo Casal'").run(ill);
+      srv.db.prepare('DELETE FROM settings WHERE key = ?').run(SAMPLE_FLAG_V3);
+    };
+    reset('combo-familia');
+    assert.equal(applySampleMenuV3(srv.db), true);
+    assert.equal(get(), 'combo-casal');
+    assert.equal(applySampleMenuV3(srv.db), false, 'aplicado uma vez só');
+    reset('combo');
+    applySampleMenuV3(srv.db);
+    assert.equal(get(), 'combo', 'escolha do dono é mantida');
+    srv.db.prepare("UPDATE products SET illustration = 'combo-casal' WHERE name = 'Combo Casal'").run();
   });
 
   it('todas as ilustrações cadastradas têm arquivo', () => {

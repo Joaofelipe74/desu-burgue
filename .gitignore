@@ -16,3 +16,6 @@ Thumbs.db
 *.log
 iniciar-log.txt
 test-results/
+
+# Python (gerador de ilustrações)
+__pycache__/
