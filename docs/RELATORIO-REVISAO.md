@@ -192,3 +192,25 @@ Feita a pedido do dono ("dá pra melhorar as imagens do cardápio").
   - no celular, nenhum conteúdo passou da largura da tela.
 - **Limitação:** alguns detalhes das descrições não aparecem no desenho. O exemplo mais visível é o presunto do X-Tudo.
   Como são imagens ilustrativas, o texto do produto é o que vale. Fotos reais podem ser enviadas pelo painel a qualquer momento.
+
+## 11. Atualização de 08/10/2026: demonstração online no GitHub Pages
+
+- **Problema:** o link do portfólio (`joaofelipe74.github.io/desu-burgue`) parou de mostrar o site.
+  Isso aconteceu quando a versão nova foi enviada ao repositório. O GitHub Pages só hospeda arquivos e não roda o servidor
+  Node, então passou a exibir o README.
+- **Solução:** uma versão de demonstração estática, gerada por `scripts/build-demo.js` na pasta `demo/`.
+  O `index.html` da raiz redireciona o GitHub Pages para ela, e por isso não foi preciso mudar nenhuma configuração do GitHub.
+  - **O que tem:** cardápio de exemplo, busca, filtros, favoritos, personalização, carrinho, finalização e acompanhamento.
+  - **Cálculo:** é o mesmo do servidor. `pricing.js` e `option-rules.js` são copiados sem alteração, e um teste confere que o
+    orçamento da demonstração é idêntico ao do servidor.
+  - **O que fica de fora:** painel, banco, envio de pedidos e cobrança. Um aviso fixo no topo diz isso.
+  - **Pedidos:** ficam só no navegador, sem telefone nem sobrenome. O andamento avança sozinho para mostrar o acompanhamento.
+- **Mudanças no código do sistema:**
+  - a regra das opções foi para `server/services/option-rules.js`, sem dependências;
+  - `public/js/lib.js` só usa a API de demonstração quando a página está marcada com `data-demo="1"`, o que nunca acontece
+    no sistema real.
+- **Testes:**
+  - 64 testes automáticos, 4 deles novos sobre a demonstração (um confere se `demo/` está atualizada);
+  - o E2E da demonstração (`npm run test:e2e:demo`) foi servido em `/desu-burgue/` como no GitHub Pages e passou nos 9 passos;
+  - o E2E do sistema continua passando nos 20 passos.
+- **Ao mudar telas ou o cardápio de exemplo:** rode `npm run build:demo:pages` e envie a pasta `demo/` junto.

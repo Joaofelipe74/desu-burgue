@@ -16,6 +16,9 @@
     "check": "node scripts/check-syntax.js && npm test",
     "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"tests/*.test.js\"",
     "test:e2e": "node --disable-warning=ExperimentalWarning tests/e2e/fluxo.e2e.js",
+    "test:e2e:demo": "node --disable-warning=ExperimentalWarning tests/e2e/demo.e2e.js",
+    "build:demo": "node --disable-warning=ExperimentalWarning scripts/build-demo.js",
+    "build:demo:pages": "node --disable-warning=ExperimentalWarning scripts/build-demo.js --out demo --base /desu-burgue/demo/ --repo https://github.com/Joaofelipe74/desu-burgue",
     "import-image": "node --disable-warning=ExperimentalWarning scripts/import-image.js"
   },
   "optionalDependencies": {

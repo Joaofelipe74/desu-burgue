@@ -19,3 +19,6 @@ test-results/
 
 # Python (gerador de ilustrações)
 __pycache__/
+
+# Versão de demonstração gerada (npm run build:demo)
+dist-demo/

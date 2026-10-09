@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" stroke="#8a8a8a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Ícone genérico usado quando o produto ainda não tem foto. Não representa o produto. -->
+  <path d="M18 42c0-14 13-22 30-22s30 8 30 22z"/>
+  <path d="M14 52h68"/>
+  <path d="M16 60c4 3 8 3 12 0s8-3 12 0 8 3 12 0 8-3 12 0 8 3 12 0"/>
+  <path d="M18 68h60v2c0 4-3 6-7 6H25c-4 0-7-2-7-6z"/>
+  <path d="M36 30h0M48 27h0M60 30h0"/>
+</svg>

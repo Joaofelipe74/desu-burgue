@@ -15,6 +15,11 @@ carrinho, finalização com entrega ou retirada, acompanhamento do pedido e pain
   - cupons, taxa de entrega e horário aberto/fechado.
 - **Pagamento:** feito **na entrega ou na retirada** (dinheiro, cartão na maquininha ou Pix). O site **não cobra nada online**.
 
+> **Demonstração online:** <https://joaofelipe74.github.io/desu-burgue/>
+> É uma versão estática que roda só no navegador: cardápio, personalização, carrinho, finalização e acompanhamento.
+> O cálculo de preços é o mesmo do servidor. Os pedidos ficam no navegador de quem testa: nada é enviado nem cobrado.
+> O painel administrativo, o banco de dados e os pedidos de verdade só funcionam rodando o projeto (veja abaixo).
+
 > A versão original (2 arquivos) está preservada em `_backup-original/` e também no primeiro commit do Git.
 
 > **Cardápio de exemplo:** na primeira vez que o sistema abre, ele cadastra um cardápio de exemplo
@@ -87,8 +92,10 @@ Para parar, pressione `Ctrl + C` no terminal.
 | `npm start` | Inicia o sistema |
 | `npm run dev` | Inicia e reinicia sozinho quando o código do servidor muda |
 | `npm run create-admin` | Cria um administrador (`-- --reset` redefine a senha de um existente) |
-| `npm test` | Roda os testes automáticos (60 testes) |
+| `npm test` | Roda os testes automáticos (64 testes) |
 | `npm run test:e2e` | Teste no navegador, em tamanho de celular e de computador (precisa do Playwright, veja abaixo) |
+| `npm run test:e2e:demo` | Teste no navegador da versão de demonstração, servida como no GitHub Pages |
+| `npm run build:demo:pages` | Atualiza a demonstração da pasta `demo/` (a que aparece no GitHub Pages) |
 | `npm run check` | Confere a sintaxe de todos os arquivos e roda os testes |
 | `npm run import-image -- --produto 1 --arquivo foto.png` | Associa uma imagem a um produto |
 | `npm run backup` | Copia o banco para `data/backups/` |
@@ -103,6 +110,28 @@ npm run test:e2e
 ```
 
 As capturas de tela ficam em `test-results/e2e/`.
+
+---
+
+## Demonstração no GitHub Pages
+
+O GitHub Pages só hospeda arquivos: não roda o servidor Node nem o banco. Por isso existe uma
+**versão de demonstração**, gerada por `scripts/build-demo.js`. Ela inclui:
+
+- as telas do cliente, sem o painel;
+- o cardápio de exemplo;
+- o mesmo cálculo de preços do servidor (`server/services/pricing.js`), rodando no navegador.
+
+Um aviso fixo no topo deixa claro que é demonstração.
+
+- **Onde fica:** a pasta `demo/` guarda a demonstração já gerada.
+- **Página da raiz:** o `index.html` só redireciona o GitHub Pages para `demo/`. O sistema de verdade usa as telas de `public/`.
+- **Quando atualizar:** depois de mudar telas, ilustrações ou o cardápio de exemplo, rode o comando abaixo e envie a pasta `demo/` junto.
+  Um teste avisa se ela ficar desatualizada.
+
+```bash
+npm run build:demo:pages
+```
 
 ---
 

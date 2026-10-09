@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-demo="1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finalizar pedido — Desu Burguer</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#161616" />
+    <link rel="icon" href="/desu-burgue/demo/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/desu-burgue/demo/css/style.css" />
+    <script type="module" src="/desu-burgue/demo/js/checkout-page.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="demo-banner" role="note"><strong>Versão de demonstração.</strong> Os pedidos ficam só neste navegador: nada é enviado nem cobrado, e o andamento do pedido avança sozinho. <a href="https://github.com/Joaofelipe74/desu-burgue" rel="noopener">Ver o código no GitHub</a></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/desu-burgue/demo/">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span data-store-name>Desu Burguer</span>
+        </a>
+        <a class="btn btn-secondary btn-small" href="/desu-burgue/demo/">Voltar ao cardápio</a>
+      </div>
+    </header>
+
+    <main id="conteudo" class="container" tabindex="-1">
+      <h1 class="page-title">Finalizar pedido</h1>
+
+      <div id="page-status" class="state" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span> Carregando…
+      </div>
+
+      <form id="checkout-form" class="checkout-layout" novalidate hidden>
+        <div>
+          <div id="form-alert" class="alert alert-error" role="alert" tabindex="-1"></div>
+
+          <fieldset>
+            <legend>Seus dados</legend>
+            <div class="field">
+              <label for="name">Nome</label>
+              <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required aria-describedby="name-error" />
+              <span class="field-error" id="name-error"></span>
+            </div>
+            <div class="field">
+              <label for="phone">Telefone / WhatsApp <span class="hint">(com DDD, para avisarmos sobre o pedido)</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="(11) 91234-5678" required aria-describedby="phone-error" />
+              <span class="field-error" id="phone-error"></span>
+            </div>
+          </fieldset>
+
+          <fieldset id="fulfillment-box">
+            <legend>Como você quer receber?</legend>
+            <label class="choice">
+              <input type="radio" name="fulfillment" value="retirada" />
+              <span>Retirar no local</span>
+              <span class="choice-extra">Sem taxa</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="fulfillment" value="entrega" />
+              <span>Entrega</span>
+              <span class="choice-extra" id="delivery-fee-label"></span>
+            </label>
+            <p class="notice" id="pickup-address" hidden></p>
+            <span class="field-error" id="fulfillment-error"></span>
+          </fieldset>
+
+          <fieldset id="address-box" hidden>
+            <legend>Endereço de entrega</legend>
+            <div class="row row-3-1">
+              <div class="field">
+                <label for="street">Rua</label>
+                <input id="street" type="text" autocomplete="address-line1" maxlength="120" aria-describedby="street-error" />
+                <span class="field-error" id="street-error"></span>
+              </div>
+              <div class="field">
+                <label for="number">Número</label>
+                <input id="number" type="text" inputmode="numeric" maxlength="20" aria-describedby="number-error" />
+                <span class="field-error" id="number-error"></span>
+              </div>
+            </div>
+            <div class="row row-2">
+              <div class="field">
+                <label for="district">Bairro</label>
+                <input id="district" type="text" maxlength="80" aria-describedby="district-error" />
+                <span class="field-error" id="district-error"></span>
+              </div>
+              <div class="field">
+                <label for="complement">Complemento <span class="hint">(opcional)</span></label>
+                <input id="complement" type="text" autocomplete="address-line2" maxlength="80" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="reference">Ponto de referência <span class="hint">(opcional)</span></label>
+              <input id="reference" type="text" maxlength="120" />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Pagamento</legend>
+            <p class="notice">O pagamento é feito na entrega ou na retirada. <strong>Nada é cobrado pelo site.</strong></p>
+            <div id="payment-options"></div>
+            <span class="field-error" id="payment-error"></span>
+            <div class="field" id="change-box" hidden>
+              <label for="change">Troco para quanto? <span class="hint">(opcional)</span></label>
+              <input id="change" type="text" inputmode="decimal" maxlength="10" placeholder="Ex.: 50,00" aria-describedby="change-error" />
+              <span class="field-error" id="change-error"></span>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Cupom de desconto</legend>
+            <div class="inline-form">
+              <label for="coupon" class="visually-hidden">Código do cupom</label>
+              <input id="coupon" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Código" />
+              <button class="btn btn-secondary" type="button" id="apply-coupon">Aplicar</button>
+            </div>
+            <p id="coupon-msg" class="hint" role="status" aria-live="polite"></p>
+          </fieldset>
+
+          <div class="field">
+            <label for="notes">Observações do pedido <span class="hint">(opcional)</span></label>
+            <textarea id="notes" maxlength="280" rows="3"></textarea>
+          </div>
+
+          <p class="notice">
+            Usamos seu nome, telefone e endereço apenas para preparar e entregar este pedido.
+          </p>
+        </div>
+
+        <aside class="card summary-card" aria-labelledby="summary-title">
+          <h2 id="summary-title">Resumo do pedido</h2>
+          <ul class="summary-items" id="summary-items"></ul>
+          <div id="summary-alert" class="alert alert-error" role="alert"></div>
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd id="sum-subtotal">—</dd></div>
+            <div class="discount" id="sum-discount-row" hidden><dt>Desconto</dt><dd id="sum-discount">—</dd></div>
+            <div id="sum-fee-row" hidden><dt>Taxa de entrega</dt><dd id="sum-fee">—</dd></div>
+            <div class="total-row"><dt>Total</dt><dd id="sum-total">—</dd></div>
+          </dl>
+          <p class="notice" id="quote-status" role="status" aria-live="polite"></p>
+          <button class="btn btn-primary btn-block" type="submit" id="submit-order">Confirmar pedido</button>
+          <a class="btn btn-secondary btn-block mt-8" href="/desu-burgue/demo/#carrinho">Editar carrinho</a>
+        </aside>
+      </form>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-demo="1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acompanhar pedido — Desu Burguer</title>
+    <meta name="robots" content="noindex" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#161616" />
+    <link rel="icon" href="/desu-burgue/demo/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/desu-burgue/demo/css/style.css" />
+    <script type="module" src="/desu-burgue/demo/js/order-page.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="demo-banner" role="note"><strong>Versão de demonstração.</strong> Os pedidos ficam só neste navegador: nada é enviado nem cobrado, e o andamento do pedido avança sozinho. <a href="https://github.com/Joaofelipe74/desu-burgue" rel="noopener">Ver o código no GitHub</a></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/desu-burgue/demo/">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span>Desu Burguer</span>
+        </a>
+        <a class="btn btn-secondary btn-small" href="/desu-burgue/demo/">Cardápio</a>
+      </div>
+    </header>
+
+    <main id="conteudo" class="container" tabindex="-1">
+      <div id="page-status" class="state" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span> Carregando pedido…
+      </div>
+
+      <div id="order" hidden>
+        <div class="page-title">
+          <p class="muted" id="greeting"></p>
+          <h1 id="order-title">Pedido</h1>
+          <p><span id="status-pill" class="status-pill" role="status" aria-live="polite"></span></p>
+        </div>
+
+        <div class="checkout-layout">
+          <section class="card" aria-labelledby="progress-title">
+            <h2 id="progress-title">Andamento</h2>
+            <ol class="status-steps" id="steps"></ol>
+            <p class="notice" id="refresh-note">Esta página se atualiza sozinha.</p>
+            <div class="alert alert-info">
+              <p><strong>Guarde este link</strong> para acompanhar o pedido depois. Ele é pessoal: não compartilhe.</p>
+              <button class="btn btn-secondary btn-small" type="button" id="copy-link">Copiar link</button>
+            </div>
+            <p id="pickup-info" class="notice" hidden></p>
+            <p id="contact-info" class="notice" hidden></p>
+          </section>
+
+          <section class="card" aria-labelledby="items-title">
+            <h2 id="items-title">Itens</h2>
+            <ul class="summary-items" id="items"></ul>
+            <dl class="totals">
+              <div><dt>Subtotal</dt><dd id="sum-subtotal"></dd></div>
+              <div class="discount" id="sum-discount-row" hidden><dt>Desconto</dt><dd id="sum-discount"></dd></div>
+              <div id="sum-fee-row" hidden><dt>Taxa de entrega</dt><dd id="sum-fee"></dd></div>
+              <div class="total-row"><dt>Total</dt><dd id="sum-total"></dd></div>
+            </dl>
+            <p class="notice" id="payment-info"></p>
+          </section>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

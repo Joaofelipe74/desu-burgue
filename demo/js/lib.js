@@ -172,7 +172,7 @@ export function productImage(product, { sizes = '(max-width: 600px) 100vw, 360px
     h(
       'div',
       { class: 'image-placeholder' },
-      h('img', { src: '/img/placeholder-produto.svg', alt: '', width: 72, height: 72 }),
+      h('img', { src: '/desu-burgue/demo/img/placeholder-produto.svg', alt: '', width: 72, height: 72 }),
       h('span', { text: 'Foto em breve' })
     );
   const img = product.image;

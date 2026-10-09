@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-demo="1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Desu Burguer — Cardápio</title>
+    <meta name="description" content="Hambúrguer feito na hora. Monte seu pedido pelo cardápio online da Desu Burguer." />
+    <meta name="theme-color" content="#161616" />
+    <link rel="icon" href="/desu-burgue/demo/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/desu-burgue/demo/css/style.css" />
+    <script type="module" src="/desu-burgue/demo/js/menu-page.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#cardapio">Pular para o cardápio</a>
+
+    <div class="demo-banner" role="note"><strong>Versão de demonstração.</strong> Os pedidos ficam só neste navegador: nada é enviado nem cobrado, e o andamento do pedido avança sozinho. <a href="https://github.com/Joaofelipe74/desu-burgue" rel="noopener">Ver o código no GitHub</a></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/desu-burgue/demo/">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span data-store-name>Desu Burguer</span>
+        </a>
+        <nav class="header-links" aria-label="Seções da página">
+          <a href="#cardapio">Cardápio</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#sobre">Sobre</a>
+        </nav>
+        <button class="btn btn-primary cart-button" type="button" id="open-cart" aria-haspopup="dialog" aria-controls="cart-dialog">
+          <span class="visually-hidden">Abrir carrinho, itens:</span>
+          <span aria-hidden="true">Carrinho</span>
+          <span class="badge" id="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-text">
+            <p class="eyebrow">Hamburgueria · delivery e retirada</p>
+            <h1 data-store-name>Desu Burguer</h1>
+            <p class="tagline">Hambúrguer feito na hora. Monte seu pedido, escolha entregar ou retirar e acompanhe tudo por aqui.</p>
+            <p id="store-status" class="store-status" hidden></p>
+            <p id="hero-hours" class="hero-hours" hidden></p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-large" href="#cardapio">Ver cardápio</a>
+              <a class="btn btn-secondary btn-large" id="hero-whatsapp" href="#" target="_blank" rel="noopener noreferrer" hidden>Falar no WhatsApp</a>
+            </div>
+          </div>
+          <figure class="hero-art">
+            <img src="/desu-burgue/demo/img/ilustracoes/hero.svg" width="400" height="300" alt="Ilustração de hambúrguer com batata frita e refrigerante" />
+            <figcaption class="illustrative-tag">Imagem ilustrativa</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="destaques" class="container section" aria-labelledby="titulo-destaques" hidden>
+        <h2 id="titulo-destaques">Destaques da casa</h2>
+        <div class="product-grid" id="featured"></div>
+      </section>
+
+      <nav class="category-nav container" id="category-nav" aria-label="Categorias do cardápio" hidden></nav>
+
+      <section id="cardapio" class="container section" aria-labelledby="titulo-cardapio" tabindex="-1">
+        <h2 id="titulo-cardapio">Nosso cardápio</h2>
+        <div class="menu-tools" role="search" aria-label="Buscar e filtrar o cardápio">
+          <div class="search-box">
+            <label for="menu-search" class="visually-hidden">Buscar no cardápio</label>
+            <input id="menu-search" type="search" placeholder="Buscar: bacon, açaí, frango…" autocomplete="off" maxlength="40" />
+          </div>
+          <label class="sort-box">
+            <span class="visually-hidden">Ordenar produtos</span>
+            <select id="menu-sort">
+              <option value="">Ordem do cardápio</option>
+              <option value="asc">Menor preço</option>
+              <option value="desc">Maior preço</option>
+              <option value="name">Nome (A–Z)</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-chips" id="filter-chips" role="group" aria-label="Filtros rápidos"></div>
+        <p id="filter-status" class="muted small" role="status" aria-live="polite"></p>
+        <div id="menu-status" class="state" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span> Carregando cardápio…
+        </div>
+        <div id="menu"></div>
+      </section>
+
+      <section id="como-funciona" class="container section" aria-labelledby="titulo-como">
+        <h2 id="titulo-como">Como funciona</h2>
+        <ol class="steps">
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">1</span>
+            <h3>Escolha</h3>
+            <p>Monte seu lanche com adicionais e observações, do seu jeito.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">2</span>
+            <h3>Confirme</h3>
+            <p>Diga se é entrega ou retirada e como vai pagar. Nada é cobrado pelo site.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">3</span>
+            <h3>Acompanhe</h3>
+            <p>Veja em tempo real quando o pedido entra em preparo e sai para você.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="sobre" class="container section" aria-labelledby="titulo-sobre">
+        <h2 id="titulo-sobre">Sobre a <span data-store-name>Desu Burguer</span></h2>
+        <p id="about-text" class="about-text">Hambúrguer feito na hora.</p>
+        <div class="info-grid" id="info-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand" href="/desu-burgue/demo/">
+            <span class="brand-mark" aria-hidden="true">D</span>
+            <span data-store-name>Desu Burguer</span>
+          </a>
+          <p class="muted small">Hambúrguer feito na hora.</p>
+        </div>
+        <div>
+          <h2 class="footer-title">Navegue</h2>
+          <ul class="footer-links">
+            <li><a href="#cardapio">Cardápio</a></li>
+            <li><a href="#como-funciona">Como funciona</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+          </ul>
+        </div>
+        <div id="footer-info">
+          <h2 class="footer-title">Atendimento</h2>
+          <ul class="footer-links" id="footer-contact"></ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p class="muted small">Pagamento na entrega ou na retirada. Imagens com o selo "Imagem ilustrativa" servem só para apresentação.</p>
+      </div>
+    </footer>
+
+    <!-- Personalização do produto -->
+    <dialog id="product-dialog" aria-labelledby="pd-title">
+      <form class="dialog-inner" id="product-form" method="dialog" novalidate>
+        <div class="dialog-header">
+          <h2 id="pd-title">Produto</h2>
+          <button class="icon-btn" type="button" data-close aria-label="Fechar"></button>
+        </div>
+        <div class="dialog-body">
+          <div id="pd-media"></div>
+          <p id="pd-desc" class="product-desc"></p>
+          <div id="pd-options"></div>
+          <fieldset id="pd-addons-box" hidden>
+            <legend>Adicionais <span class="hint">(opcional)</span></legend>
+            <div id="pd-addons"></div>
+          </fieldset>
+          <div class="field">
+            <label for="pd-notes">Observação <span class="hint">(opcional, ex.: molho à parte)</span></label>
+            <textarea id="pd-notes" maxlength="140" rows="2" aria-describedby="pd-notes-count"></textarea>
+            <span id="pd-notes-count" class="hint">0/140</span>
+          </div>
+          <div class="field">
+            <span id="pd-qty-label" class="label">Quantidade</span>
+            <div class="stepper" role="group" aria-labelledby="pd-qty-label">
+              <button class="icon-btn" type="button" id="pd-minus" aria-label="Diminuir quantidade"></button>
+              <output id="pd-qty" aria-live="polite">1</output>
+              <button class="icon-btn" type="button" id="pd-plus" aria-label="Aumentar quantidade"></button>
+            </div>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <p id="pd-error" class="field-error" role="alert"></p>
+          <button class="btn btn-primary btn-block" type="submit" id="pd-submit">Adicionar ao carrinho</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Carrinho -->
+    <dialog id="cart-dialog" class="drawer" aria-labelledby="cart-title">
+      <div class="dialog-inner">
+        <div class="dialog-header">
+          <h2 id="cart-title">Seu carrinho</h2>
+          <button class="icon-btn" type="button" data-close aria-label="Fechar carrinho"></button>
+        </div>
+        <div class="dialog-body">
+          <p id="cart-empty" class="state">Seu carrinho está vazio.</p>
+          <ul class="cart-list" id="cart-list"></ul>
+          <div id="cart-alert" class="alert alert-error" role="alert"></div>
+        </div>
+        <div class="dialog-footer" id="cart-footer">
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd id="cart-subtotal">R$ 0,00</dd></div>
+          </dl>
+          <p class="notice">Taxas e descontos aparecem na revisão do pedido.</p>
+          <a class="btn btn-primary btn-block" href="/desu-burgue/demo/checkout.html" id="go-checkout">Finalizar pedido</a>
+          <button class="btn btn-secondary btn-block" type="button" data-close>Continuar escolhendo</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
