@@ -15,10 +15,12 @@ carrinho, finalização com entrega ou retirada, acompanhamento do pedido e pain
   - cupons, taxa de entrega e horário aberto/fechado.
 - **Pagamento:** feito **na entrega ou na retirada** (dinheiro, cartão na maquininha ou Pix). O site **não cobra nada online**.
 
-> **Demonstração online:** <https://joaofelipe74.github.io/desu-burgue/>
-> É uma versão estática que roda só no navegador: cardápio, personalização, carrinho, finalização e acompanhamento.
-> O cálculo de preços é o mesmo do servidor. Os pedidos ficam no navegador de quem testa: nada é enviado nem cobrado.
-> O painel administrativo, o banco de dados e os pedidos de verdade só funcionam rodando o projeto (veja abaixo).
+> **Demonstração online:** <https://joaofelipe74.github.io/desu-burgue/> (loja) e
+> <https://joaofelipe74.github.io/desu-burgue/demo/admin/> (painel).
+> É uma versão estática que roda só no navegador: cardápio, personalização, carrinho, finalização, acompanhamento
+> e um painel de demonstração com pedidos de exemplo, mudança de status, disponibilidade, cupons e configurações.
+> O cálculo de preços é o mesmo do servidor. Tudo fica no navegador de quem testa: nada é enviado nem cobrado,
+> e o painel de demonstração abre sem senha. O sistema completo (login, banco e pedidos de verdade) roda com o servidor (veja abaixo).
 
 > A versão original (2 arquivos) está preservada em `_backup-original/` e também no primeiro commit do Git.
 
@@ -118,7 +120,7 @@ As capturas de tela ficam em `test-results/e2e/`.
 O GitHub Pages só hospeda arquivos: não roda o servidor Node nem o banco. Por isso existe uma
 **versão de demonstração**, gerada por `scripts/build-demo.js`. Ela inclui:
 
-- as telas do cliente, sem o painel;
+- as telas do cliente e um painel de demonstração (abre sem senha, com pedidos de exemplo);
 - o cardápio de exemplo;
 - o mesmo cálculo de preços do servidor (`server/services/pricing.js`), rodando no navegador.
 

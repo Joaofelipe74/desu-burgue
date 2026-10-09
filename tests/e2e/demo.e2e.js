@@ -1,5 +1,5 @@
 // Teste de ponta a ponta da VERSÃO DE DEMONSTRAÇÃO (a que vai para o GitHub Pages).
-/* global document, window, localStorage -- usados dentro de page.evaluate (rodam no navegador) */
+/* global document, window -- usados dentro de page.evaluate (rodam no navegador) */
 // Gera a demonstração numa pasta temporária, serve como arquivos estáticos em /desu-burgue/
 // (igual ao GitHub Pages, sem servidor de API) e faz um pedido completo no celular e no computador.
 // Uso: npm run test:e2e:demo   (requer Playwright, como o test:e2e)
@@ -137,18 +137,23 @@ for (const d of devices) {
     await page.screenshot({ path: `${OUT}/${L}-4-pedido.png`, fullPage: true });
   });
 
-  await step(`${L}: o andamento avança sozinho e o carrinho foi esvaziado`, async () => {
-    // Simula que o pedido foi feito há 70 segundos.
-    await page.evaluate(() => {
-      const k = 'desu.demo.pedidos.v1';
-      const lista = JSON.parse(localStorage.getItem(k));
-      lista[lista.length - 1].criadoEm = new Date(Date.now() - 70000).toISOString();
-      localStorage.setItem(k, JSON.stringify(lista));
-    });
-    await page.reload();
-    await page.locator('#status-pill').waitFor();
-    const esperado = d.fulfillment === 'entrega' ? 'Saiu para entrega' : 'Pronto para retirada';
-    assert.equal(await page.locator('#status-pill').textContent(), esperado);
+  await step(`${L}: o painel de demonstração mostra o pedido e muda o status`, async () => {
+    const pedidoUrl = page.url();
+    const codigo = (await page.locator('#order-title').textContent()).match(/#\d{4}/)[0];
+    await page.goto(origin + BASE + 'admin/');
+    assert.match(await page.locator('.demo-banner').textContent(), /Painel de demonstração/);
+    const card = page.locator('.order-card', { has: page.getByRole('heading', { name: codigo }) });
+    await card.waitFor();
+    assert.ok((await page.locator('.order-card').count()) >= 2, 'tem pedidos de exemplo também');
+    await page.screenshot({ path: `${OUT}/${L}-5-painel.png`, fullPage: true });
+    await card.getByRole('button', { name: 'Marcar: Em preparo' }).click();
+    await card.locator('.status-pill', { hasText: 'Em preparo' }).waitFor();
+    for (const aba of ['Cardápio', 'Adicionais', 'Opções', 'Cupons', 'Configurações']) {
+      await page.getByRole('tab', { name: aba }).click();
+      await page.waitForTimeout(300);
+    }
+    await page.goto(pedidoUrl);
+    await page.locator('#status-pill', { hasText: 'Em preparo' }).waitFor();
     await page.goto(origin + BASE);
     assert.equal(await page.locator('#cart-count').textContent(), '0');
   });

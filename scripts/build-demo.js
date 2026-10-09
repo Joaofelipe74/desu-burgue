@@ -2,9 +2,10 @@
 // (que só hospeda arquivos, sem servidor Node e sem banco de dados).
 //
 // O que a demonstração tem: cardápio de exemplo, busca e filtros, personalização, carrinho,
-// finalização com o MESMO cálculo de preços do servidor e acompanhamento do pedido.
-// O que ela NÃO tem: painel administrativo, banco de dados, envio de pedidos ou cobrança.
-// Os pedidos ficam só no navegador de quem testa, e um aviso fixo deixa isso claro na tela.
+// finalização com o MESMO cálculo de preços do servidor, acompanhamento do pedido e um painel
+// de demonstração (pedidos, status, disponibilidade, cupons e configurações).
+// O que ela NÃO tem: servidor, banco de dados, login de verdade, envio de pedidos ou cobrança.
+// Tudo fica só no navegador de quem testa, e um aviso fixo deixa isso claro na tela.
 //
 // Uso:
 //   npm run build:demo:pages   → atualiza a pasta demo/ publicada no GitHub Pages deste repositório
@@ -19,9 +20,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT_DIR } from '../server/config.js';
 import { openDatabase } from '../server/db.js';
-import { getPublicMenu, loadCatalog, popularProductIds } from '../server/services/menu.js';
+import { listCoupons } from '../server/services/coupons.js';
+import { illustrationList } from '../server/services/illustrations.js';
+import { getPublicMenu, listAddons, listCategories, listProducts, loadCatalog, popularProductIds } from '../server/services/menu.js';
+import { listOptionGroups } from '../server/services/options.js';
 import { STATUS_LABELS } from '../server/services/orders.js';
 import { getSettings, PAYMENT_LABELS, publicSettings } from '../server/services/settings.js';
+import { tagList } from '../server/services/tags.js';
 
 const MARCADOR = '.desu-demo-build';
 
@@ -90,6 +95,14 @@ function comBase(conteudo, base, { html }) {
   return s;
 }
 
+/** Troca "/img/..." e "/uploads/..." pelo caminho base, em qualquer texto dentro dos dados. */
+function comBaseNosDados(valor, base) {
+  if (typeof valor === 'string') return /^\/(img|uploads)\//.test(valor) ? base + valor.slice(1) : valor;
+  if (Array.isArray(valor)) return valor.map((v) => comBaseNosDados(v, base));
+  if (valor && typeof valor === 'object') return Object.fromEntries(Object.entries(valor).map(([k, v]) => [k, comBaseNosDados(v, base)]));
+  return valor;
+}
+
 function dadosDaDemo(base) {
   const db = openDatabase(':memory:', { sampleMenu: true });
   try {
@@ -116,7 +129,23 @@ function dadosDaDemo(base) {
         productGroups: [...cat.options.productGroups.entries()],
       },
     };
-    return { menu, settings, catalog, paymentLabels: PAYMENT_LABELS, statusLabels: STATUS_LABELS };
+    // Respostas do painel, geradas pelos mesmos serviços que o servidor usa.
+    const admin = comBaseNosDados(
+      {
+        categories: semDatas(listCategories(db)),
+        products: {
+          products: semDatas(listProducts(db)),
+          illustrations: illustrationList(),
+          tags: tagList(),
+          optionGroups: listOptionGroups(db).map((g) => ({ id: g.id, name: g.name, archived: g.archived })),
+        },
+        addons: semDatas(listAddons(db)),
+        optionGroups: listOptionGroups(db),
+        coupons: listCoupons(db),
+      },
+      base
+    );
+    return { menu, settings, catalog, admin, paymentLabels: PAYMENT_LABELS, statusLabels: STATUS_LABELS };
   } finally {
     db.close();
   }
@@ -155,9 +184,8 @@ function main() {
   const out = prepararSaida(opt.out);
   const pub = path.join(ROOT_DIR, 'public');
 
-  // 1. Telas do cliente (o painel administrativo precisa do servidor e fica de fora).
-  copiarPasta(pub, out, new Set(['admin']));
-  fs.rmSync(path.join(out, 'js', 'admin'), { recursive: true, force: true });
+  // 1. Telas da loja e do painel.
+  copiarPasta(pub, out);
 
   // 2. Dados do cardápio de exemplo e o cálculo de preços do servidor (o mesmo código).
   const demo = path.join(out, 'demo');
@@ -168,12 +196,17 @@ function main() {
   fs.copyFileSync(path.join(ROOT_DIR, 'scripts', 'demo', 'api.js'), path.join(demo, 'api.js'));
 
   // 3. Páginas: modo demonstração, caminhos com a base, política de segurança e aviso.
-  const link = opt.repo ? ` <a href="${escapeAttr(opt.repo)}" rel="noopener">Ver o código no GitHub</a>` : '';
-  const aviso =
+  const codigo = opt.repo ? ` · <a href="${escapeAttr(opt.repo)}" rel="noopener">Ver o código no GitHub</a>` : '';
+  const avisoLoja =
     '<div class="demo-banner" role="note"><strong>Versão de demonstração.</strong> ' +
-    'Os pedidos ficam só neste navegador: nada é enviado nem cobrado, e o andamento do pedido avança sozinho.' +
-    `${link}</div>`;
+    'Os pedidos ficam só neste navegador: nada é enviado nem cobrado. ' +
+    `<a href="${opt.base}admin/">Abrir o painel da loja</a> para ver os pedidos e mudar o status${codigo}</div>`;
+  const avisoPainel =
+    '<div class="demo-banner" role="note"><strong>Painel de demonstração.</strong> ' +
+    'Abre sem senha e as mudanças ficam só neste navegador. No sistema real, o acesso exige e-mail e senha forte. ' +
+    `<a href="${opt.base}">Voltar para a loja</a>${codigo}</div>`;
   for (const file of arquivos(out, '.html')) {
+    const aviso = path.relative(out, file).startsWith('admin') ? avisoPainel : avisoLoja;
     let s = fs.readFileSync(file, 'utf8');
     if (!s.includes('<html lang="pt-BR">') || !/<body>/.test(s) || !s.includes('<meta charset="UTF-8" />')) {
       throw new Error(`Estrutura inesperada em ${path.relative(out, file)}`);

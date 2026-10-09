@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-demo="1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Painel — Desu Burguer</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#161616" />
+    <link rel="icon" href="/desu-burgue/demo/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/desu-burgue/demo/css/style.css" />
+    <script type="module" src="/desu-burgue/demo/js/admin/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="demo-banner" role="note"><strong>Painel de demonstração.</strong> Abre sem senha e as mudanças ficam só neste navegador. No sistema real, o acesso exige e-mail e senha forte. <a href="/desu-burgue/demo/desu-burgue/demo/">Voltar para a loja</a> · <a href="https://github.com/Joaofelipe74/desu-burgue" rel="noopener">Ver o código no GitHub</a></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/desu-burgue/demo/admin/">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span>Painel <span data-store-name>Desu Burguer</span></span>
+        </a>
+        <div class="toolbar compact" id="user-bar" hidden>
+          <span class="muted small" id="user-name"></span>
+          <button class="btn btn-secondary btn-small" type="button" id="logout">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="conteudo" class="container" tabindex="-1">
+      <div id="boot" class="state" role="status"><span class="spinner" aria-hidden="true"></span> Carregando…</div>
+
+      <section id="login-view" class="card login-card" aria-labelledby="login-title" hidden>
+        <h1 id="login-title">Entrar no painel</h1>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="login-email">E-mail</label>
+            <input id="login-email" type="email" autocomplete="username" required maxlength="254" />
+          </div>
+          <div class="field">
+            <label for="login-password">Senha</label>
+            <input id="login-password" type="password" autocomplete="current-password" required maxlength="512" />
+          </div>
+          <div id="login-alert" class="alert alert-error" role="alert"></div>
+          <button class="btn btn-primary btn-block" type="submit" id="login-submit">Entrar</button>
+        </form>
+        <p class="notice">Ainda não tem acesso? O primeiro administrador é criado no servidor com <code>npm run create-admin</code>.</p>
+      </section>
+
+      <section id="app-view" hidden>
+        <div class="admin-tabs" role="tablist" aria-label="Seções do painel">
+          <button role="tab" type="button" id="tab-btn-pedidos" aria-controls="tab-pedidos" aria-selected="true">Pedidos</button>
+          <button role="tab" type="button" id="tab-btn-cardapio" aria-controls="tab-cardapio" aria-selected="false" tabindex="-1">Cardápio</button>
+          <button role="tab" type="button" id="tab-btn-adicionais" aria-controls="tab-adicionais" aria-selected="false" tabindex="-1">Adicionais</button>
+          <button role="tab" type="button" id="tab-btn-opcoes" aria-controls="tab-opcoes" aria-selected="false" tabindex="-1">Opções</button>
+          <button role="tab" type="button" id="tab-btn-cupons" aria-controls="tab-cupons" aria-selected="false" tabindex="-1">Cupons</button>
+          <button role="tab" type="button" id="tab-btn-config" aria-controls="tab-config" aria-selected="false" tabindex="-1">Configurações</button>
+          <button role="tab" type="button" id="tab-btn-conta" aria-controls="tab-conta" aria-selected="false" tabindex="-1">Minha conta</button>
+        </div>
+        <div id="global-alert" class="alert alert-error" role="alert"></div>
+
+        <div role="tabpanel" id="tab-pedidos" aria-labelledby="tab-btn-pedidos"></div>
+        <div role="tabpanel" id="tab-cardapio" aria-labelledby="tab-btn-cardapio" hidden></div>
+        <div role="tabpanel" id="tab-adicionais" aria-labelledby="tab-btn-adicionais" hidden></div>
+        <div role="tabpanel" id="tab-opcoes" aria-labelledby="tab-btn-opcoes" hidden></div>
+        <div role="tabpanel" id="tab-cupons" aria-labelledby="tab-btn-cupons" hidden></div>
+        <div role="tabpanel" id="tab-config" aria-labelledby="tab-btn-config" hidden></div>
+        <div role="tabpanel" id="tab-conta" aria-labelledby="tab-btn-conta" hidden></div>
+      </section>
+    </main>
+
+    <dialog id="product-editor" aria-labelledby="pe-title">
+      <form class="dialog-inner" id="pe-form" novalidate>
+        <div class="dialog-header">
+          <h2 id="pe-title">Produto</h2>
+          <button class="btn btn-secondary btn-small" type="button" data-close>Fechar</button>
+        </div>
+        <div class="dialog-body" id="pe-body"></div>
+        <div class="dialog-footer">
+          <div id="pe-alert" class="alert alert-error" role="alert"></div>
+          <button class="btn btn-primary btn-block" type="submit" id="pe-save">Salvar produto</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

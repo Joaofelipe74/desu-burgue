@@ -214,3 +214,19 @@ Feita a pedido do dono ("dá pra melhorar as imagens do cardápio").
   - o E2E da demonstração (`npm run test:e2e:demo`) foi servido em `/desu-burgue/` como no GitHub Pages e passou nos 9 passos;
   - o E2E do sistema continua passando nos 20 passos.
 - **Ao mudar telas ou o cardápio de exemplo:** rode `npm run build:demo:pages` e envie a pasta `demo/` junto.
+
+### 11.1 Painel na demonstração (09/10/2026)
+
+- **O que tem:** a demonstração ganhou o painel em `/desu-burgue/demo/admin/`, com as mesmas telas do sistema real.
+  - **Pedidos:** os pedidos feitos na loja de demonstração aparecem no painel, junto com 4 pedidos de exemplo
+    de clientes fictícios. A mudança de status segue as mesmas regras do servidor e o cliente vê o novo status no acompanhamento.
+  - **Cardápio, adicionais e opções:** dá para ligar e desligar a disponibilidade, e a loja passa a recusar o item.
+    As outras edições mostram um aviso de que só funcionam rodando o projeto.
+  - **Cupons:** os cupons criados valem no checkout, calculados pelo mesmo `pricing.js` do servidor.
+  - **Configurações:** abrir e fechar a loja, taxa, entrega e retirada se refletem na loja.
+- **Como os dados são gerados:** as listas do painel saem, no build, dos mesmos serviços do servidor (`listProducts`,
+  `listOptionGroups` etc.).
+- **Sem senha:** o painel de demonstração abre sem senha, e o aviso fixo deixa isso claro.
+  Não é controle de acesso; no sistema real, login, sessão, CSRF e permissões continuam no servidor.
+- **Testes:** os testes cobrem status, transições inválidas, disponibilidade, cupom, loja fechada e edições bloqueadas.
+  O E2E da demonstração abre o painel, muda o status e confere no acompanhamento do cliente.
