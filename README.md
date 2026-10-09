@@ -16,7 +16,7 @@ carrinho, finalização com entrega ou retirada, acompanhamento do pedido e pain
 - **Pagamento:** feito **na entrega ou na retirada** (dinheiro, cartão na maquininha ou Pix). O site **não cobra nada online**.
 
 > **Demonstração online:** <https://joaofelipe74.github.io/desu-burgue/> (loja) e
-> <https://joaofelipe74.github.io/desu-burgue/demo/admin/> (painel).
+> <https://joaofelipe74.github.io/desu-burgue/admin/> (painel).
 > É uma versão estática que roda só no navegador: cardápio, personalização, carrinho, finalização, acompanhamento
 > e um painel de demonstração com pedidos de exemplo, mudança de status, disponibilidade, cupons e configurações.
 > O cálculo de preços é o mesmo do servidor. Tudo fica no navegador de quem testa: nada é enviado nem cobrado,
@@ -127,7 +127,8 @@ O GitHub Pages só hospeda arquivos: não roda o servidor Node nem o banco. Por 
 Um aviso fixo no topo deixa claro que é demonstração.
 
 - **Onde fica:** a pasta `demo/` guarda a demonstração já gerada.
-- **Página da raiz:** o `index.html` só redireciona o GitHub Pages para `demo/`. O sistema de verdade usa as telas de `public/`.
+- **Páginas da raiz:** `index.html`, `admin/index.html` e `404.html` só redirecionam o GitHub Pages para `demo/`.
+  O sistema de verdade usa as telas de `public/`.
 - **Quando atualizar:** depois de mudar telas, ilustrações ou o cardápio de exemplo, rode o comando abaixo e envie a pasta `demo/` junto.
   Um teste avisa se ela ficar desatualizada.
 

@@ -65,6 +65,15 @@ describe('versão de demonstração', () => {
     for (const f of lista(nova)) assert.ok(fs.readFileSync(path.join(publicada, f)).equals(fs.readFileSync(path.join(nova, f))), `${msg} (${f})`);
   });
 
+  it('no GitHub Pages, /admin/ e endereços inexistentes levam para a demonstração', () => {
+    const admin = fs.readFileSync(path.join(ROOT_DIR, 'admin', 'index.html'), 'utf8');
+    assert.match(admin, /url=\.\.\/demo\/admin\//);
+    const raiz = fs.readFileSync(path.join(ROOT_DIR, 'index.html'), 'utf8');
+    assert.match(raiz, /url=demo\//);
+    const naoEncontrada = fs.readFileSync(path.join(ROOT_DIR, '404.html'), 'utf8');
+    assert.match(naoEncontrada, /url=\/desu-burgue\/demo\//);
+  });
+
   it('não apaga uma pasta que não foi criada pelo build', () => {
     const outra = path.join(tmp, 'pasta-do-usuario');
     fs.mkdirSync(outra);
